@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/routes-manifest.json",
+      "dest": "/.next/standalone/routes-manifest.json"
+    }
+  ]
+}
