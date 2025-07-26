@@ -1,24 +1,11 @@
 'use client';
 
-import { Card, CardContent, Badge } from '@/components';
-import { personalInfo, experiences, skills } from '@/data/portfolio';
-import { 
-  Code, 
-  Users, 
-  Trophy, 
-  MapPin, 
-  Calendar,
-  Github,
-  Linkedin,
-  Mail,
-  ExternalLink,
-  ChevronRight,
-  Phone
-} from 'lucide-react';
+import { personalInfo, experiences, skills, socialLinks } from '@/data/portfolio';
+import { MapPin, Github, Linkedin, Mail, ExternalLink, Phone } from 'lucide-react';
 import Image from 'next/image';
 
 export default function AboutSection() {
-  const languages = ["Français", "English"];
+  const languages = ["Français"];
   
   const skillCategories = [
     {
@@ -58,20 +45,6 @@ export default function AboutSection() {
     }
   ];
 
-  const tableOfContents = [
-    { id: "intro", title: "Introduction", display: true },
-    { id: "experience", title: "Expérience", display: true },
-    { id: "technical", title: "Compétences", display: true },
-    { id: "contact-cta", title: "Contact", display: true }
-  ];
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   return (
     <section id="about" className="py-20 px-4 bg-gradient-to-b from-black via-zinc-900/20 to-black min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -107,9 +80,6 @@ export default function AboutSection() {
                       {personalInfo.name.split(' ').map(n => n[0]).join('')}
                     </span>
                   </div>
-                </div>
-                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-zinc-900 flex items-center justify-center">
-                  <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
                 </div>
               </div>
 
@@ -147,19 +117,10 @@ export default function AboutSection() {
                 ))}
               </div>
 
-              {/* Bouton calendrier */}
-              <div className="bg-sky-400/10 border border-sky-400/20 rounded-full p-3 mb-6 hover:bg-sky-400/20 transition-colors cursor-pointer group">
-                <div className="flex items-center gap-3 text-sky-400">
-                  <Calendar className="w-4 h-4" />
-                  <span className="text-sm font-medium">Programmer un appel</span>
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-
               {/* Liens sociaux */}
               <div className="flex justify-center gap-3">
                 <a 
-                  href={personalInfo.github}
+                  href={socialLinks.github}
                   className="w-10 h-10 bg-zinc-800/50 border border-zinc-700/50 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700/50 transition-all duration-200"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -167,7 +128,7 @@ export default function AboutSection() {
                   <Github className="w-4 h-4" />
                 </a>
                 <a 
-                  href="https://linkedin.com/in/arthurjean"
+                  href={socialLinks.linkedin} 
                   className="w-10 h-10 bg-zinc-800/50 border border-zinc-700/50 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700/50 transition-all duration-200"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -195,8 +156,8 @@ export default function AboutSection() {
                 </p>
                 <p className="text-zinc-400 leading-relaxed mt-4">
                   Depuis plus de 3 ans, je me consacre au développement full stack en utilisant les dernières technologies. 
-                  Mon expertise couvre l'ensemble du stack technique, de la conception d'architectures modulaires jusqu'au 
-                  déploiement et à la maintenance d'applications performantes.
+                  Mon expertise couvre l&apos;ensemble du stack technique, de la conception d&apos;architectures modulaires jusqu&apos;au 
+                  déploiement et à la maintenance d&apos;applications performantes.
                 </p>
               </div>
             </div>
@@ -206,7 +167,7 @@ export default function AboutSection() {
               <h2 className="text-3xl font-bold text-white mb-8">Expérience Professionnelle</h2>
               
               <div className="space-y-8">
-                {experiences.map((experience, index) => (
+                {experiences.map((experience) => (
                   <div 
                     key={experience.id}
                     className="bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-700/50 p-8 hover:bg-zinc-800/30 transition-all duration-300"
@@ -249,9 +210,9 @@ export default function AboutSection() {
               <h2 className="text-3xl font-bold text-white mb-8">Compétences Techniques</h2>
               
               <div className="space-y-8">
-                {skillCategories.map((category, index) => (
+                {skillCategories.map((category) => (
                   <div 
-                    key={index}
+                    key={category.title}
                     className="bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-700/50 p-8"
                   >
                     <h3 className="text-xl font-semibold text-white mb-2">
@@ -334,7 +295,7 @@ export default function AboutSection() {
                   
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <a 
-                      href={`mailto:${personalInfo.email}`}
+                      href="/contact"
                       className="inline-flex items-center gap-3 bg-sky-400 text-black font-medium px-6 py-3 rounded-full hover:bg-sky-500 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-sky-400/25 cursor-pointer"
                     >
                       <Mail className="w-4 h-4" />
@@ -358,4 +319,4 @@ export default function AboutSection() {
       </div>
     </section>
   );
-} 
+}

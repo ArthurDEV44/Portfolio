@@ -72,7 +72,7 @@ export function Carousel({ images, title, className = "" }: CarouselProps) {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isModalOpen]);
+  }, [isModalOpen, nextModalImage, prevModalImage]);
 
   if (!images || images.length === 0) {
     return null;

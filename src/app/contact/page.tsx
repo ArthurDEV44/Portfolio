@@ -38,12 +38,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Contact - Arthur Jean | Développeur Full Stack',
-    description: 'Discutons de votre projet ! Développeur spécialisé en Next.js, React et applications SaaS.',
-    images: ['/images/og-contact.jpg'],
-  },
   alternates: {
     canonical: 'https://arthurjean.dev/contact',
   },

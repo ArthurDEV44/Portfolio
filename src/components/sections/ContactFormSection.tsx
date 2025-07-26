@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Button, Card, CardContent, Input, Label, Textarea } from '@/components';
+import { Button, Card, CardContent, Input, Textarea } from '@/components';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { CheckCircle, AlertCircle } from 'lucide-react';
 
@@ -81,7 +81,7 @@ export default function ContactFormSection() {
       <div className="max-w-4xl mx-auto">
         <div className="grid lg:grid-cols-1 gap-12 items-start">
           {/* Right Column - Form */}
-          <Card className="bg-black backdrop-blur-md border-zinc-700/50 rounded-3xl shadow-2xl shadow-white/20">
+          <Card className="bg-black backdrop-blur-md border-zinc-700/50 rounded-3xl shadow-2xl shadow-white/10">
             <CardContent className="p-8 pt-2 pb-0">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

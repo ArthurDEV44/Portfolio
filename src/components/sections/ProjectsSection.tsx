@@ -1,24 +1,11 @@
 "use client";
 
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from '@/components';
 import { projects } from '@/data/portfolio';
-import { ExternalLink, Github, Star, Filter, ArrowRight, Images, Clock } from 'lucide-react';
+import { ExternalLink, Github, Star, Images, Clock } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function ProjectsSection() {
-  const [filter, setFilter] = useState<'all' | 'featured'>('all');
-
-  const filteredProjects = filter === 'featured' 
-    ? projects.filter(project => project.featured)
-    : projects;
-
-  const getAllTechnologies = () => {
-    const allTechs = projects.flatMap(project => project.technologies);
-    return [...new Set(allTechs)];
-  };
-
   const getTechColor = (tech: string) => {
     const colors = {
       'Angular 19': 'bg-red-500/20 text-red-300 border-red-500/30',
@@ -62,35 +49,9 @@ export default function ProjectsSection() {
           </p>
         </div>
 
-        {/* Filtres */}
-        <div className="flex justify-center gap-4 mb-12 animate-fade-in">
-          <button
-            onClick={() => setFilter('all')}
-            className={`flex items-center gap-2 px-6 py-3 rounded-full border transition-all duration-300 ${
-              filter === 'all' 
-                ? 'bg-sky-400 text-black border-sky-400 shadow-lg shadow-sky-400/25' 
-                : 'bg-zinc-900/50 backdrop-blur-md text-zinc-300 border-zinc-700/50 hover:bg-zinc-800/50 hover:text-white'
-            }`}
-          >
-            <Filter className="w-4 h-4" />
-            Tous les projets ({projects.length})
-          </button>
-          <button
-            onClick={() => setFilter('featured')}
-            className={`flex items-center gap-2 px-6 py-3 rounded-full border transition-all duration-300 ${
-              filter === 'featured' 
-                ? 'bg-sky-400 text-black border-sky-400 shadow-lg shadow-sky-400/25' 
-                : 'bg-zinc-900/50 backdrop-blur-md text-zinc-300 border-zinc-700/50 hover:bg-zinc-800/50 hover:text-white'
-            }`}
-          >
-            <Star className="w-4 h-4" />
-            Projets phares ({projects.filter(p => p.featured).length})
-          </button>
-        </div>
-
         {/* Grille des projets */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
-          {filteredProjects.map((project, index) => (
+          {projects.map((project, index) => (
             <div 
               key={project.id}
               className="bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-700/50 overflow-hidden hover:bg-zinc-800/30 transition-all duration-300 group flex flex-col h-full"

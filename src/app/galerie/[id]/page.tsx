@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { ArrowLeft, Calendar, Code, ExternalLink, Github } from 'lucide-react';
+import { ArrowLeft, Code, ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { projects } from '@/data/portfolio';
@@ -58,12 +58,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
           alt: project.title,
         },
       ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [project.imageUrl],
     },
   };
 }
@@ -209,7 +203,7 @@ export default async function GalleryPage({ params }: PageProps) {
               <h3 className="text-xl font-semibold text-white mb-4">Informations</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-zinc-400">Nombre d'images</span>
+                  <span className="text-zinc-400">Nombre d&apos;images</span>
                   <span className="text-white font-medium">{project.galleryImages.length}</span>
                 </div>
                 <div className="flex items-center justify-between">

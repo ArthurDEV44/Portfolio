@@ -1,8 +1,7 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from '@/components';
 import { personalInfo, socialLinks } from '@/data/portfolio';
-import { Mail, Phone, MapPin, Github, Linkedin, Twitter, ExternalLink, Clock, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, Linkedin, ExternalLink, Instagram } from 'lucide-react';
 
 export default function ContactSection() {
   const contactMethods = [
@@ -66,7 +65,7 @@ export default function ContactSection() {
           </h2>
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
             Vous avez un projet en tête ? Une question technique ? 
-            N'hésitez pas à me contacter, je serais ravi d'échanger avec vous.
+            N&apos;hésitez pas à me contacter, je serais ravi d&apos;échanger avec vous.
           </p>
         </div>
 

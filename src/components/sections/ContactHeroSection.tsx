@@ -1,6 +1,3 @@
-import { personalInfo } from '@/data/portfolio';
-import { Mail, Phone, MapPin, Clock } from 'lucide-react';
-
 export default function ContactHeroSection() {
   return (
     <section className="relative px-4 bg-gradient-to-b from-black via-zinc-900/20 to-black pt-40">

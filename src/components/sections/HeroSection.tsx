@@ -1,6 +1,6 @@
 import { Button } from '@/components';
 import { personalInfo, socialLinks } from '@/data/portfolio';
-import { Download, Github, Linkedin, Mail } from 'lucide-react';
+import { Download, Github, Instagram, Linkedin, Mail } from 'lucide-react';
 import Particles from '../particles';
 
 export default function HeroSection() {
@@ -39,7 +39,7 @@ export default function HeroSection() {
             className="gap-2 min-w-[160px] bg-sky-400 text-black hover:bg-sky-500 transition-colors rounded-full shadow-lg shadow-sky-400/30"
             asChild
           >
-            <a href="#contact">
+            <a href="/contact">
               <Mail className="w-4 h-4" />
               Me contacter
             </a>
@@ -81,11 +81,13 @@ export default function HeroSection() {
           </a>
           
           <a 
-            href={socialLinks.email} 
+            href={socialLinks.instagram} 
+            target="_blank" 
+            rel="noopener noreferrer" 
             className="text-zinc-500 hover:text-zinc-300 transition-colors duration-300"
-            aria-label="Email"
+            aria-label="Instagram"
           >
-            <Mail className="w-5 h-5" />
+            <Instagram className="w-5 h-5" />
           </a>
         </div>
       </div>

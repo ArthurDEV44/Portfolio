@@ -68,14 +68,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: {
-    card: "summary_large_image",
-    site: "@arthurjean_dev",
-    creator: "@arthurjean_dev",
-    title: `${personalInfo.name} - ${personalInfo.title}`,
-    description: personalInfo.bio,
-    images: ["/images/og-image.jpg"],
-  },
   alternates: {
     canonical: "https://arthurjean.dev",
   },
@@ -102,7 +94,7 @@ const jsonLd = {
   sameAs: [
     socialLinks.github,
     socialLinks.linkedin,
-    socialLinks.twitter,
+    socialLinks.instagram,
   ],
   knowsAbout: [
     "React",

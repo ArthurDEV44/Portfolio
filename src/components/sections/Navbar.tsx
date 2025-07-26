@@ -1,20 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button } from '@/components';
-import { personalInfo } from '@/data/portfolio';
-import { 
-  Home, 
-  DollarSign, 
-  Mail,
-  Sun,
-  Moon,
-  Menu,
-  X
-} from 'lucide-react';
+import { Home, Mail } from 'lucide-react';
 
 const navigation = [
   { 
@@ -30,24 +19,8 @@ const navigation = [
 ];
 
 export default function Navbar() {
-  const [isDark, setIsDark] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle('dark');
-  };
 
   const handleMenuClose = () => {
     setIsMenuOpen(false);

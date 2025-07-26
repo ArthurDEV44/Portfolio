@@ -169,6 +169,6 @@ export const experiences: Experience[] = [
 
 export const socialLinks = {
   github: "https://github.com/ArthurDEV44",
-  linkedin: "https://linkedin.com/in/arthurjean",
+  linkedin: "https://www.linkedin.com/in/arthur-jean-401b56239",
   instagram: "https://www.instagram.com/_arthurj_/"
 }; 
