@@ -1,0 +1,32 @@
+# Robots.txt optimisé pour Arthur Jean - Développeur Full Stack
+
+User-agent: *
+Allow: /
+
+# Pages importantes à indexer en priorité
+Allow: /
+Allow: /contact
+Allow: /images/
+Allow: /documents/cv-arthur-jean.pdf
+
+# Exclure les fichiers et dossiers non utiles pour le SEO
+Disallow: /api/
+Disallow: /_next/
+Disallow: /sw.js
+Disallow: /.well-known/
+
+# Sitemap
+Sitemap: https://arthurjean.dev/sitemap.xml
+
+# Optimisations pour les principaux moteurs de recherche
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Crawl-delay pour éviter la surcharge
+Crawl-delay: 1

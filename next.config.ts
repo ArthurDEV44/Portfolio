@@ -4,9 +4,24 @@ const nextConfig: NextConfig = {
   // Utilisation de l'option standalone pour le déploiement
   output: 'standalone',
   
-  // Optimisations de performance
+  // Optimisations de performance avancées
   experimental: {
     optimizePackageImports: ["@/components"],
+    scrollRestoration: true
+  },
+  
+  // Compression et optimisations
+  compress: true,
+  poweredByHeader: false,
+  
+  // Réécriture pour améliorer le SEO
+  async rewrites() {
+    return [
+      {
+        source: '/feed.xml',
+        destination: '/api/feed',
+      },
+    ]
   },
 
   // Optimisations d'images
@@ -69,6 +84,14 @@ const nextConfig: NextConfig = {
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains; preload",
+          },
+          {
+            key: "X-DNS-Prefetch-Control",
+            value: "on",
           },
         ],
       },
