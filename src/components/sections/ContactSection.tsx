@@ -53,7 +53,7 @@ export default function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="py-20 px-4 bg-gradient-to-b from-black via-zinc-900/20 to-black min-h-screen">
+    <section id="contact" className="flex flex-col items-center justify-center py-20 px-4 bg-gradient-to-b from-black via-zinc-900/20 to-black min-h-screen">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in">
