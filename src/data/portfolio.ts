@@ -80,14 +80,13 @@ export const projects: Project[] = [
     id: "readflow",
     title: "Readflow",
     description: "Transformez votre workflow ! Grâce à notre IA, créez et gérez vos documentations simplement.",
-    technologies: ["Next.js", "Clerk", "NeonDB", "TailwindCSS", "Shadcn/UI", "Prisma", "Vercel"],
+    technologies: ["Next.js", "Clerk", "NeonDB", "TailwindCSS", "Shadcn/UI", "Prisma", "Vercel", "Three.js"],
     imageUrl: "/images/projects/hero-readflow.png",
-    featured: false,
-    galleryImages: [
-      "/images/projects/readflow/capture-readpilot.png",
-      "/images/projects/readflow/capture-flowhub-fiche-technique.png",
-      "/images/projects/readflow/capture-flowhub-readme.png"
-    ]
+    favicon: "",
+    urls: [],
+    version: "v1.2.3",
+    developer: "Arthur Jean",
+    featured: false
   },
   {
     id: "ornicron",
@@ -95,13 +94,11 @@ export const projects: Project[] = [
     description: "Demandez un devis gratuitement et obtenez un workflow sur mesure.",
     technologies: ["Next.js", "TailwindCSS", "Prisma", "Clerk", "Vercel", "NeonDB"],
     imageUrl: "/images/projects/hero-ornicron.png",
-    featured: false,
-    galleryImages: [
-      "/images/projects/ornicron/demande-devis.png",
-      "/images/projects/ornicron/integrations.png",
-      "/images/projects/ornicron/globe.png",
-      "/images/projects/ornicron/workflow-config.png"
-    ]
+    favicon: "",
+    urls: [],
+    version: "v2.1.0",
+    developer: "Arthur Jean",
+    featured: false
   },
   {
     id: "azuna",
@@ -109,26 +106,38 @@ export const projects: Project[] = [
     description: "La conciergerie spécialisée dans la gestion de biens immobiliers.",
     technologies: ["Next.js", "TailwindCSS", "Vercel", "Three.js"],
     imageUrl: "/images/projects/hero-azuna.png",
-    liveUrl: "https://www.azuna.pro",
+    favicon: "https://azuna.pro/favicon.ico",
+    liveUrl: "https://azuna.pro",
+    urls: ["https://azuna.pro"],
+    version: "v0.0.9",
+    developer: "Arthur Jean",
     featured: false
   },
   {
     id: "ausommetdechezvous",
     title: "Au Sommet de Chez Vous",
     description: "Au sommet de chez vous répond avec sérieux et qualité à tous vos besoins d'élagage et d'abattage.",
-    technologies: ["Next.js", "TailwindCSS", "NeonDB", "Prisma", "Clerk", "Vercel"],
+    technologies: ["Next.js", "TailwindCSS", "NeonDB", "Prisma", "Clerk", "Vercel", "Resend"],
     imageUrl: "/images/projects/hero-ausommetdechezvous.png",
-    liveUrl: "https://ausommetdechezvous.vercel.app",
+    favicon: "https://ausommetdechezvous.com/favicon.ico",
+    liveUrl: "https://ausommetdechezvous.com",
+    urls: ["https://ausommetdechezvous.com", "https://ausommetdechezvous.fr", "https://ausommetdechezvous.bzh", "https://au-sommet-de-chez-vous.fr", "https://au-sommet-de-chez-vous.com"],
+    version: "v0.0.4",
+    developer: "Arthur Jean",
     featured: false
   },
   {
     id: "atreeyn",
     title: "Atreeyn",
     description: "La plateforme ultime pour les créateurs de contenu et joueurs d'esports Warzone.",
-    technologies: ["Next.js", "TailwindCSS", "SWR", "NeonDB", "PostgreSQL", "Prisma", "Clerk", "Vercel"],
+    technologies: ["Next.js", "TailwindCSS", "SWR", "NeonDB", "Prisma", "Clerk", "Vercel", "Zustand"],
     imageUrl: "/images/projects/hero-atreeyn.png",
+    favicon: "https://atreeyn.com/favicon.ico",
+    urls: [],
+    version: "v0.0.1.2",
+    developer: "Arthur Jean",
     featured: false,
-    galleryImages: []
+    status: "development"
   }
 ];
 

@@ -1,36 +1,58 @@
 "use client";
 
 import { projects } from '@/data/portfolio';
-import { ExternalLink, Github, Star, Images, Clock } from 'lucide-react';
+import { ExternalLink, MoreHorizontal } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useState, useEffect, useRef } from 'react';
 
 export default function ProjectsSection() {
-  const getTechColor = (tech: string) => {
-    const colors = {
-      'Angular 19': 'bg-red-500/20 text-red-300 border-red-500/30',
-      'Fastify 5': 'bg-green-500/20 text-green-300 border-green-500/30',
-      'Next.js': 'bg-zinc-800/50 text-white border-zinc-600/50',
-      'React': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-      'TypeScript': 'bg-blue-600/20 text-blue-300 border-blue-600/30',
-      'Node.js': 'bg-green-600/20 text-green-300 border-green-600/30',
-      'PostgreSQL': 'bg-blue-700/20 text-blue-300 border-blue-700/30',
-      'Prisma': 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
-      'Stripe': 'bg-purple-600/20 text-purple-300 border-purple-600/30',
-      'TailwindCSS': 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
-      'Three.js': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
-      'PWA': 'bg-violet-500/20 text-violet-300 border-violet-500/30',
-      'PrimeNG': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-      'Clean Architecture': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-      'Docker Swarm': 'bg-blue-400/20 text-blue-300 border-blue-400/30',
-      'GitHub Actions': 'bg-gray-500/20 text-gray-300 border-gray-500/30',
-      'Vercel': 'bg-zinc-700/20 text-zinc-300 border-zinc-600/30',
-      'Clerk': 'bg-sky-500/20 text-sky-300 border-sky-500/30',
-      'NeonDB': 'bg-green-500/20 text-green-300 border-green-500/30',
-      'SWR': 'bg-white text-black border-white/30'
+  const [tooltipProject, setTooltipProject] = useState<string | null>(null);
+  const [faviconErrors, setFaviconErrors] = useState<Set<string>>(new Set());
+  const [expandedTech, setExpandedTech] = useState<Set<string>>(new Set());
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  // Fermer le tooltip en cliquant à l'extérieur
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
+        setTooltipProject(null);
+      }
     };
-    return colors[tech as keyof typeof colors] || 'bg-zinc-700/20 text-zinc-300 border-zinc-600/30';
-  };
+
+    if (tooltipProject) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [tooltipProject]);
+
+  // Composant Tooltip pour les URLs
+  const UrlTooltip = ({ urls, projectId }: { urls: string[], projectId: string }) => (
+    <div 
+      ref={tooltipRef}
+      className="fixed z-50 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl p-3 min-w-48"
+      style={{
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
+      }}
+    >
+      <div className="space-y-2">
+        {urls.map((url, index) => (
+          <a
+            key={index}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-zinc-800 transition-colors text-sm text-zinc-300 hover:text-white"
+            onClick={() => setTooltipProject(null)}
+          >
+            <ExternalLink className="w-3 h-3" />
+            <span className="truncate">{url.replace(/^https?:\/\//, '')}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <section id="projects" className="py-20 px-4 bg-gradient-to-b from-black via-zinc-900/20 to-black min-h-screen">
@@ -49,127 +71,182 @@ export default function ProjectsSection() {
           </p>
         </div>
 
-        {/* Grille des projets */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
-          {projects.map((project, index) => (
+        {/* Grille des projets - Style Vercel */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+          {projects.map((project) => (
             <div 
               key={project.id}
-              className="bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-700/50 overflow-hidden hover:bg-zinc-800/30 transition-all duration-300 group flex flex-col h-full"
+              className="bg-zinc-900/50 backdrop-blur-md rounded-xl border border-zinc-800/50 overflow-hidden hover:border-zinc-700/50 transition-all duration-300 group flex flex-col"
             >
-              {/* Image du projet */}
-              <div className="relative h-48 bg-gradient-to-br from-sky-400/10 to-blue-600/10 overflow-hidden flex-shrink-0">
-                {project.featured && (
-                  <div className="absolute top-3 left-3 z-10">
-                    <div className="flex items-center gap-1 bg-yellow-500/20 backdrop-blur-md border border-yellow-500/30 text-yellow-300 px-3 py-1 rounded-full text-xs font-medium">
-                      <Star className="w-3 h-3" />
-                      Phare
+              {/* Header avec favicon, nom et actions */}
+              <div className="p-4 border-b border-zinc-800/50">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    {/* Favicon */}
+                    <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                      {project.favicon && !faviconErrors.has(project.id) ? (
+                        <Image
+                          src={project.favicon}
+                          alt={`${project.title} favicon`}
+                          width={20}
+                          height={20}
+                          className="rounded"
+                          onError={() => {
+                            setFaviconErrors(prev => new Set([...prev, project.id]));
+                          }}
+                        />
+                      ) : (
+                        <span className="text-lg">📦</span>
+                      )}
+                    </div>
+                    
+                    {/* Nom du projet */}
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-medium text-white text-sm mb-0 leading-tight truncate">
+                        {project.title}
+                      </h3>
+                      {project.urls && project.urls.length > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <a 
+                            href={project.urls[0]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors hover:underline leading-tight truncate"
+                          >
+                            {project.urls[0].replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                          </a>
+                          {/* Bouton URLs multiples - déplacé ici */}
+                          {project.urls.length > 1 && (
+                            <div className="relative flex-shrink-0">
+                              <button
+                                onClick={() => setTooltipProject(tooltipProject === project.id ? null : project.id)}
+                                className="w-5 h-5 rounded-md flex items-center justify-center text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800/50 transition-all duration-200 relative cursor-pointer"
+                              >
+                                <span className="text-xs font-medium">+{project.urls.length}</span>
+                              </button>
+                              {tooltipProject === project.id && (
+                                <>
+                                  {/* Overlay */}
+                                  <div className="fixed inset-0 bg-black/20 z-40" />
+                                  <UrlTooltip urls={project.urls} projectId={project.id} />
+                                </>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-zinc-500 leading-tight truncate">
+                          {project.developer || 'Arthur Jean'}
+                        </p>
+                      )}
                     </div>
                   </div>
-                )}
-                
-                {/* Image du projet */}
-                <div className="w-full h-full bg-gradient-to-br from-sky-400/20 to-blue-600/20 flex items-center justify-center relative overflow-hidden">
-                  {project.imageUrl ? (
-                    <Image
-                      src={project.imageUrl}
-                      alt={project.title}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      onError={(e) => {
-                        // En cas d'erreur de chargement, afficher le fallback
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="text-6xl font-bold text-sky-400/30">
-                      {index + 1}
-                    </div>
-                  )}
+                </div>
+
+                {/* Version et statut */}
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex items-center gap-2">
+                    {project.version && (
+                      <span className="text-xs px-2 py-1 bg-zinc-800/50 text-zinc-400 rounded-md">
+                        {project.version}
+                      </span>
+                    )}
+                    {project.featured && (
+                      <span className="text-xs px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-md border border-yellow-500/30">
+                        ⭐ Phare
+                      </span>
+                    )}
+                  </div>
                   
-                  {/* Overlay avec actions rapides */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-3">
-                    {project.githubUrl && (
-                      <a 
-                        href={project.githubUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="w-10 h-10 bg-zinc-800/80 backdrop-blur-md border border-zinc-600/50 rounded-full flex items-center justify-center text-zinc-300 hover:text-white hover:bg-zinc-700/80 transition-all duration-200"
-                        title="Voir le code source"
-                      >
-                        <Github className="w-4 h-4" />
-                      </a>
+                  <div className="flex items-center gap-1">
+                    {project.status === 'development' ? (
+                      <>
+                        <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                        <span className="text-xs text-zinc-500">En développement</span>
+                      </>
+                    ) : project.urls && project.urls.length > 0 ? (
+                      <>
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-xs text-zinc-500">En ligne</span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-2 h-2 bg-zinc-500 rounded-full"></div>
+                        <span className="text-xs text-zinc-500">Hors ligne</span>
+                      </>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Contenu */}
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-sky-300 transition-colors">
-                  {project.title}
-                </h3>
+              {/* Image de preview */}
+              <div className="relative h-48 bg-gradient-to-br from-zinc-800/20 to-zinc-900/40 overflow-hidden">
+                <Image
+                  src={project.imageUrl}
+                  alt={`Capture d'écran de ${project.title}`}
+                  fill
+                  className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    // En cas d'erreur, afficher un placeholder
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
+                
+                {/* Overlay subtle au hover */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
+              </div>
 
-                <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+              {/* Contenu */}
+              <div className="p-4 flex-grow flex flex-col">
+                <p className="text-sm text-zinc-400 leading-relaxed mb-4 flex-grow">
                   {project.description}
                 </p>
 
-                {/* Technologies */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.technologies.slice(0, 4).map((tech) => (
-                    <span 
-                      key={tech}
-                      className={`text-xs px-2 py-1 rounded-md border ${getTechColor(tech)}`}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                  {project.technologies.length > 4 && (
-                    <span className="text-xs px-2 py-1 rounded-md border bg-zinc-700/20 text-zinc-400 border-zinc-600/30">
-                      +{project.technologies.length - 4}
-                    </span>
-                  )}
-                </div>
-
-                {/* Actions dynamiques - toujours en bas */}
-                <div className="flex gap-2 mt-auto">
-                  {/* Bouton principal - Consulter ou Galerie */}
-                  {project.liveUrl ? (
-                    <a 
-                      href={project.liveUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white hover:bg-white/80 text-black rounded-lg transition-all duration-200 text-sm font-medium cursor-pointer"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      Consulter
-                    </a>
-                  ) : project.galleryImages && project.galleryImages.length > 0 ? (
-                    <Link 
-                      href={`/galerie/${project.id}`}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-transparent hover:bg-white/10 border border-white/10 text-white rounded-lg transition-all duration-200 text-sm font-medium cursor-pointer"
-                    >
-                      <Images className="w-4 h-4" />
-                      Galerie
-                    </Link>
+                {/* Technologies - Style compact avec expansion */}
+                <div className="flex flex-wrap gap-1 mt-auto">
+                  {expandedTech.has(project.id) ? (
+                    // Mode étendu : toutes les technologies
+                    <>
+                      {project.technologies.map((tech) => (
+                        <span 
+                          key={tech}
+                          className="text-xs px-2 py-1 bg-zinc-800/30 text-zinc-400 rounded border border-zinc-700/30"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                      <button
+                        onClick={() => setExpandedTech(prev => {
+                          const newSet = new Set(prev);
+                          newSet.delete(project.id);
+                          return newSet;
+                        })}
+                        className="text-xs px-2 py-1 bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 rounded border border-zinc-700/30 transition-colors cursor-pointer"
+                      >
+                        − Moins
+                      </button>
+                    </>
                   ) : (
-                    <div className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-sky-400/10 border border-sky-400/30 text-sky-400 rounded-lg transition-all duration-200 text-sm font-medium">
-                      <Clock className="w-4 h-4" />
-                      En développement
-                    </div>
-                  )}
-
-                  {/* Bouton secondaire - GitHub si disponible */}
-                  {project.githubUrl && (
-                    <a 
-                      href={project.githubUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-4 py-2 bg-zinc-800/50 border border-zinc-700/50 text-zinc-300 rounded-lg hover:bg-zinc-700/50 hover:text-white transition-all duration-200 text-sm"
-                      title="Voir le code source"
-                    >
-                      <Github className="w-4 h-4" />
-                    </a>
+                    // Mode compact : 3 premières technologies + bouton
+                    <>
+                      {project.technologies.slice(0, 3).map((tech) => (
+                        <span 
+                          key={tech}
+                          className="text-xs px-2 py-1 bg-zinc-800/30 text-zinc-400 rounded border border-zinc-700/30"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                      {project.technologies.length > 3 && (
+                        <button
+                          onClick={() => setExpandedTech(prev => new Set([...prev, project.id]))}
+                          className="text-xs px-2 py-1 bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 rounded border border-zinc-700/30 transition-colors cursor-pointer"
+                        >
+                          +{project.technologies.length - 3}
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

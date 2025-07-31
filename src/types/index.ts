@@ -4,10 +4,14 @@ export interface Project {
   description: string;
   technologies: string[];
   imageUrl: string;
-  liveUrl?: string;
-  githubUrl?: string;
+  favicon?: string;
+  urls?: string[]; // Tableau des URLs (liveUrl, githubUrl, etc.)
+  liveUrl?: string; // Gardé pour compatibilité
+  githubUrl?: string; // Gardé pour compatibilité
+  version?: string;
+  developer?: string;
   featured: boolean;
-  galleryImages?: string[]; // Nouvelles images pour la galerie
+  status?: 'online' | 'offline' | 'development'; // Statut du projet
 }
 
 export interface Experience {
