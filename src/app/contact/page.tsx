@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     description: 'Discutons de votre projet ! Développeur spécialisé en Next.js, React et applications SaaS. Devis gratuit et réponse rapide.',
     type: 'website',
     locale: 'fr_FR',
-    url: 'https://arthurjean.dev/contact',
+    url: 'https://arthurjean.com/contact',
     siteName: `${personalInfo.name} - Portfolio`,
     images: [
       {
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     ],
   },
   alternates: {
-    canonical: 'https://arthurjean.dev/contact',
+    canonical: 'https://arthurjean.com/contact',
   },
 };
 
@@ -61,7 +61,7 @@ const jsonLd = {
       "postalCode": "44200",
       "addressCountry": "FR"
     },
-    "url": "https://arthurjean.dev",
+    "url": "https://arthurjean.com",
     "sameAs": [
       "https://github.com/ArthurDEV44",
       "https://linkedin.com/in/arthurjean"
@@ -74,13 +74,13 @@ const jsonLd = {
         "@type": "ListItem",
         "position": 1,
         "name": "Accueil",
-        "item": "https://arthurjean.dev"
+        "item": "https://arthurjean.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Contact",
-        "item": "https://arthurjean.dev/contact"
+        "item": "https://arthurjean.com/contact"
       }
     ]
   }

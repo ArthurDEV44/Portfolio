@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     description: `Découvrez mes projets et compétences en développement Full Stack. Spécialisé en Next.js, React, Angular et architectures modernes.`,
     type: 'website',
     locale: 'fr_FR',
-    url: 'https://arthurjean.dev',
+    url: 'https://arthurjean.com',
     siteName: `${personalInfo.name} - Portfolio`,
     images: [
       {
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     images: ['/images/og-home.jpg'],
   },
   alternates: {
-    canonical: 'https://arthurjean.dev',
+    canonical: 'https://arthurjean.com',
   },
 };
 
@@ -60,11 +60,11 @@ const homeJsonLd = {
   "@type": "ProfilePage",
   "mainEntity": {
     "@type": "Person",
-    "@id": "https://arthurjean.dev/#person",
+    "@id": "https://arthurjean.com/#person",
     "name": personalInfo.name,
     "jobTitle": personalInfo.title,
     "description": personalInfo.bio,
-    "url": "https://arthurjean.dev",
+    "url": "https://arthurjean.com",
     "hasOccupation": {
       "@type": "Occupation",
       "name": "Développeur Full Stack",
@@ -87,7 +87,7 @@ const homeJsonLd = {
         "@type": "ListItem",
         "position": 1,
         "name": "Accueil",
-        "item": "https://arthurjean.dev"
+        "item": "https://arthurjean.com"
       }
     ]
   }

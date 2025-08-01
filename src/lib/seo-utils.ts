@@ -54,7 +54,7 @@ export function generateMetadata(config: SEOConfig): Metadata {
       description,
       type: 'website',
       locale: 'fr_FR',
-      url: canonical || 'https://arthurjean.dev',
+      url: canonical || 'https://arthurjean.com',
       siteName: `${personalInfo.name} - Portfolio`,
       images: [
         {
@@ -72,7 +72,7 @@ export function generateMetadata(config: SEOConfig): Metadata {
       images: [ogImage],
     },
     alternates: {
-      canonical: canonical || 'https://arthurjean.dev',
+      canonical: canonical || 'https://arthurjean.com',
     },
   }
 }
@@ -95,13 +95,13 @@ export function generateProjectJsonLd(project: {
     "creator": {
       "@type": "Person",
       "name": personalInfo.name,
-      "@id": "https://arthurjean.dev/#person"
+      "@id": "https://arthurjean.com/#person"
     },
     "programmingLanguage": project.technologies,
     "url": project.urls && project.urls.length > 0 ? project.urls[0] : undefined,
     "screenshot": {
       "@type": "ImageObject",
-      "url": `https://arthurjean.dev${project.imageUrl}`,
+      "url": `https://arthurjean.com${project.imageUrl}`,
       "description": `Capture d'écran de ${project.title}`
     },
     "offers": {

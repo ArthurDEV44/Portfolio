@@ -74,16 +74,16 @@
 ### Commandes de test :
 ```bash
 # Test sitemap
-curl https://arthurjean.dev/sitemap.xml
+curl https://arthurjean.com/sitemap.xml
 
 # Test robots.txt  
-curl https://arthurjean.dev/robots.txt
+curl https://arthurjean.com/robots.txt
 
 # Test RSS feed
-curl https://arthurjean.dev/feed.xml
+curl https://arthurjean.com/feed.xml
 
 # Lighthouse CI
-npx lighthouse https://arthurjean.dev --chrome-flags="--headless"
+npx lighthouse https://arthurjean.com --chrome-flags="--headless"
 ```
 
 ## 🎯 Résultats Attendus

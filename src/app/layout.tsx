@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 // Métadonnées SEO complètes optimisées
 export const metadata: Metadata = {
-  metadataBase: new URL('https://arthurjean.dev'),
+  metadataBase: new URL('https://arthurjean.com'),
   title: {
     default: `${personalInfo.name} - ${personalInfo.title} | Portfolio`,
     template: `%s | ${personalInfo.name} - Développeur Full Stack`
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://arthurjean.dev",
+    url: "https://arthurjean.com",
     siteName: `${personalInfo.name} - Portfolio`,
     title: `${personalInfo.name} - ${personalInfo.title}`,
     description: personalInfo.bio,
@@ -104,9 +104,9 @@ export const metadata: Metadata = {
     creator: `@${personalInfo.name.replace(' ', '')}`,
   },
   alternates: {
-    canonical: "https://arthurjean.dev",
+    canonical: "https://arthurjean.com",
     types: {
-      'application/rss+xml': 'https://arthurjean.dev/feed.xml',
+      'application/rss+xml': 'https://arthurjean.com/feed.xml',
     }
   },
   verification: {
@@ -123,17 +123,17 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "@id": "https://arthurjean.dev/#person",
+  "@id": "https://arthurjean.com/#person",
   name: personalInfo.name,
   alternateName: ["Arthur Jean", "ArthurDEV44"],
   jobTitle: personalInfo.title,
   description: personalInfo.bio,
-  url: "https://arthurjean.dev",
+  url: "https://arthurjean.com",
   email: personalInfo.email,
   telephone: personalInfo.phone,
   image: {
     "@type": "ImageObject",
-    url: "https://arthurjean.dev/images/avatar.png",
+    url: "https://arthurjean.com/images/avatar.png",
     width: 400,
     height: 400
   },
@@ -149,7 +149,7 @@ const jsonLd = {
     socialLinks.github,
     socialLinks.linkedin,
     socialLinks.instagram,
-    "https://arthurjean.dev"
+    "https://arthurjean.com"
   ],
   knowsAbout: [
     {
@@ -237,22 +237,22 @@ const jsonLd = {
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "@id": "https://arthurjean.dev/#website",
-  url: "https://arthurjean.dev",
+  "@id": "https://arthurjean.com/#website",
+  url: "https://arthurjean.com",
   name: `${personalInfo.name} - Portfolio`,
   description: personalInfo.bio,
   publisher: {
-    "@id": "https://arthurjean.dev/#person"
+    "@id": "https://arthurjean.com/#person"
   },
   potentialAction: {
     "@type": "SearchAction",
-    target: "https://arthurjean.dev/contact",
+    target: "https://arthurjean.com/contact",
     "query-input": "required name=search_term_string"
   },
   inLanguage: "fr-FR",
   copyrightYear: new Date().getFullYear(),
   copyrightHolder: {
-    "@id": "https://arthurjean.dev/#person"
+    "@id": "https://arthurjean.com/#person"
   }
 };
 

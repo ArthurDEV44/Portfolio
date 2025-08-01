@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { personalInfo, projects, experiences } from '@/data/portfolio'
 
 export async function GET() {
-  const baseUrl = 'https://arthurjean.dev'
+  const baseUrl = 'https://arthurjean.com'
   const currentDate = new Date().toISOString()
 
   const rssContent = `<?xml version="1.0" encoding="UTF-8"?>

@@ -16,7 +16,7 @@ Disallow: /sw.js
 Disallow: /.well-known/
 
 # Sitemap
-Sitemap: https://arthurjean.dev/sitemap.xml
+Sitemap: https://arthurjean.com/sitemap.xml
 
 # Optimisations pour les principaux moteurs de recherche
 User-agent: Googlebot
