@@ -134,7 +134,7 @@ export const projects: Project[] = [
     imageUrl: "/images/projects/hero-atreeyn.png",
     favicon: "https://atreeyn.com/favicon.ico",
     urls: [],
-    version: "v0.0.1.2",
+    version: "v0.0.1.3",
     developer: "Arthur Jean",
     featured: false,
     status: "development"

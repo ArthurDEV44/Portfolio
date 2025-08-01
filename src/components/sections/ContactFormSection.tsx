@@ -12,7 +12,7 @@ import { CheckCircle, AlertCircle } from 'lucide-react';
 const formSchema = z.object({
   firstName: z.string().min(2, 'Le prénom doit contenir au moins 2 caractères'),
   lastName: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
-  workEmail: z.string().email('Veuillez entrer une adresse email valide'),
+  workEmail: z.email({ error: 'Veuillez entrer une adresse email valide' }),
   subject: z.string().min(5, 'L\'objet doit contenir au moins 5 caractères'),
   message: z.string().min(10, 'Le message doit contenir au moins 10 caractères'),
 });
