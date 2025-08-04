@@ -120,7 +120,7 @@ export const projects: Project[] = [
     technologies: ["Next.js", "TailwindCSS", "NeonDB", "Prisma", "Clerk", "Vercel", "Resend"],
     imageUrl: "/images/projects/hero-ausommetdechezvous.png",
     favicon: "https://ausommetdechezvous.com/favicon.ico",
-    liveUrl: "https://ausommetdechezvous.com",
+    liveUrl: "https://ausommetdechezvous.bzh",
     urls: ["https://ausommetdechezvous.com", "https://ausommetdechezvous.fr", "https://ausommetdechezvous.bzh", "https://au-sommet-de-chez-vous.fr", "https://au-sommet-de-chez-vous.com"],
     version: "v0.0.4",
     developer: "Arthur Jean",
@@ -134,7 +134,7 @@ export const projects: Project[] = [
     imageUrl: "/images/projects/hero-atreeyn.png",
     favicon: "https://atreeyn.com/favicon.ico",
     urls: [],
-    version: "v0.0.1.3",
+    version: "v0.0.2",
     developer: "Arthur Jean",
     featured: false,
     status: "development"
