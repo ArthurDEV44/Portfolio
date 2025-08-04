@@ -121,7 +121,7 @@ export const projects: Project[] = [
     imageUrl: "/images/projects/hero-ausommetdechezvous.png",
     favicon: "https://ausommetdechezvous.com/favicon.ico",
     liveUrl: "https://ausommetdechezvous.bzh",
-    urls: ["https://ausommetdechezvous.com", "https://ausommetdechezvous.fr", "https://ausommetdechezvous.bzh", "https://au-sommet-de-chez-vous.fr", "https://au-sommet-de-chez-vous.com"],
+    urls: ["https://ausommetdechezvous.bzh", "https://ausommetdechezvous.fr", "https://ausommetdechezvous.com", "https://au-sommet-de-chez-vous.fr", "https://au-sommet-de-chez-vous.com"],
     version: "v0.0.4",
     developer: "Arthur Jean",
     featured: false
