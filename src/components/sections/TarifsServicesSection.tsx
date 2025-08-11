@@ -102,7 +102,7 @@ export default function TarifsServicesSection() {
         <div className="text-center relative z-10">
           <a href="/contact" className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-full text-white font-semibold shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 group text-sm sm:text-base">
             <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
-            <span>Discutons de votre projet tech</span>
+            <span>Discutons de votre projet</span>
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 group-hover:translate-x-1 transition-transform flex-shrink-0" />
           </a>
         </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Mail, Calculator } from 'lucide-react';
+import { Home, Mail, Calculator, Menu, X } from 'lucide-react';
 
 const navigation = [
   { 
@@ -58,6 +58,21 @@ export default function Navbar() {
                   ))}
                 </div>
               </div>
+            </div>
+
+            {/* Bouton hamburger - Mobile */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="bg-zinc-900/50 backdrop-blur-md rounded-full border border-zinc-700/50 p-3 text-zinc-400 hover:text-white transition-colors"
+                aria-label="Menu"
+              >
+                {isMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
+              </button>
             </div>
           </div>
         </div>

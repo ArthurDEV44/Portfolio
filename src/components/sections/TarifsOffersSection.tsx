@@ -3,10 +3,9 @@ import { Clock, Cpu } from "lucide-react";
 // Composant pour les dividers tech entre les offres
 const TechDivider = () => (
   <div className="flex justify-center items-center mb-8 sm:mb-12 lg:mb-16">
-    <div className="flex items-center space-x-2 sm:space-x-4">
-      <div className="w-8 sm:w-12 lg:w-16 h-px bg-gradient-to-r from-transparent to-cyan-500"></div>
-      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-sky-500 rounded-full"></div>
-      <div className="w-8 sm:w-12 lg:w-16 h-px bg-gradient-to-l from-transparent to-cyan-500"></div>
+    <div className="flex items-center">
+      <div className="w-8 sm:w-12 lg:w-16 h-px bg-gradient-to-r from-transparent to-sky-500"></div>
+      <div className="w-8 sm:w-12 lg:w-16 h-px bg-gradient-to-l from-transparent to-sky-500"></div>
     </div>
   </div>
 );
@@ -77,6 +76,42 @@ const OfferCard = ({
         sectionText: 'text-violet-300',
         overlayFrom: 'from-violet-500/10',
         overlayTo: 'to-purple-500/10'
+      },
+      emerald: {
+        iconText: 'text-emerald-400',
+        descriptionText: 'text-emerald-200',
+        cardBorder: 'border-emerald-500/20',
+        dot: 'bg-emerald-400',
+        dotHover: 'group-hover:bg-green-400',
+        sectionBg: 'bg-emerald-500/10',
+        sectionBorder: 'border-emerald-500/20',
+        sectionText: 'text-emerald-300',
+        overlayFrom: 'from-emerald-500/10',
+        overlayTo: 'to-green-500/10'
+      },
+      orange: {
+        iconText: 'text-orange-400',
+        descriptionText: 'text-orange-200',
+        cardBorder: 'border-orange-500/20',
+        dot: 'bg-orange-400',
+        dotHover: 'group-hover:bg-red-400',
+        sectionBg: 'bg-orange-500/10',
+        sectionBorder: 'border-orange-500/20',
+        sectionText: 'text-orange-300',
+        overlayFrom: 'from-orange-500/10',
+        overlayTo: 'to-red-500/10'
+      },
+      indigo: {
+        iconText: 'text-indigo-400',
+        descriptionText: 'text-indigo-200',
+        cardBorder: 'border-indigo-500/20',
+        dot: 'bg-indigo-400',
+        dotHover: 'group-hover:bg-blue-400',
+        sectionBg: 'bg-indigo-500/10',
+        sectionBorder: 'border-indigo-500/20',
+        sectionText: 'text-indigo-300',
+        overlayFrom: 'from-indigo-500/10',
+        overlayTo: 'to-blue-500/10'
       }
     };
     return colorMap[color] || colorMap.cyan;
@@ -101,7 +136,10 @@ const OfferCard = ({
               <h3 className="text-lg sm:text-xl font-semibold text-gray-100 mb-4 sm:mb-6 flex items-center flex-wrap">
                 <Cpu className={`w-5 h-5 sm:w-6 sm:h-6 ${colors.iconText} mr-2 sm:mr-3 flex-shrink-0`} />
                 <span className="leading-tight">
-                  {title.includes('Starter') ? 'Stack technique inclus' : 
+                  {title.includes('Marketplace') ? 'Écosystème multi-vendeurs' :
+                   title.includes('SaaS Starter') ? 'Architecture SaaS modulaire' :
+                   title.includes('SaaS Premium') ? 'Plateforme SaaS Enterprise' :
+                   title.includes('Starter') ? 'Stack technique inclus' : 
                    title.includes('Premium') ? 'Architecture avancée' :
                    title.includes('Refonte') ? 'Optimisation e-commerce' : 'Solution Enterprise'}
                 </span>
@@ -128,7 +166,7 @@ const OfferCard = ({
                 <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-sky-300 mb-2 leading-tight font-jetbrains">{priceRange}</p>
                 <p className="text-xs sm:text-sm text-gray-400 font-jetbrains mb-3 sm:mb-4">{priceSubtext}</p>
                 <div className={`p-2 sm:p-3 ${colors.sectionBg} rounded-lg border ${colors.sectionBorder}`}>
-                  <p className={`text-xs ${colors.sectionText} font-mono leading-relaxed`}>Devis personnalisé selon scope</p>
+                  <p className={`text-xs ${colors.sectionText} font-mono leading-relaxed`}>Devis personnalisé selon vos besoins</p>
                 </div>
               </div>
             </div>
@@ -142,14 +180,14 @@ const OfferCard = ({
 export default function TarifsOffersSection() {
   const offers = [
     {
-      title: "Site Vitrine Starter",
+      title: "Vitrine Starter",
       colorTitle: "text-white",
       colorDescription: "text-zinc-400",
       description: "Solution rapide pour une présence web professionnelle",
       headerGradient: "bg-gradient-to-br from-black to-sky-600/40",
       iconColor: "cyan",
       features: [
-        "5 pages responsive (React/Next.js)",
+        "Jusqu'à 5 pages responsive (React/Next.js)",
         "Design system personnalisé",
         "Mobile-first & PWA ready",
         "Formulaires avec validation",
@@ -161,20 +199,19 @@ export default function TarifsOffersSection() {
       priceSubtext: "Hors taxes"
     },
     {
-      title: "Site Vitrine Premium",
+      title: "Vitrine Premium",
       colorTitle: "text-white",
       colorDescription: "text-zinc-400",
       description: "Identité digitale unique avec écosystème complet",
       headerGradient: "bg-gradient-to-br from-black to-purple-600/40",
       iconColor: "purple",
       features: [
-        "15 pages avec architecture modulaire",
+        "Jusqu'à 15 pages avec architecture modulaire",
         "Design system & maquettes UI/UX",
         "Module de devis interactif",
         "CMS headless & blog intégré",
         "SEO technique & Core Web Vitals",
-        "Analytics & tracking avancés",
-        "Formation complète & documentation"
+        "Analytics & tracking avancés"
       ],
       deliveryTime: "3-5 semaines",
       priceRange: "2 500 € – 4 500 €",
@@ -211,11 +248,68 @@ export default function TarifsOffersSection() {
         "Intégrations CRM/ERP & API custom",
         "Multi-langues, devises & marchés",
         "Assistance IA",
-        "Sécurité enterprise & RGPD",
-        "Support dédié avec documentation"
+        "Sécurité enterprise & RGPD"
       ],
       deliveryTime: "5-10 semaines",
       priceRange: "5 000 € – 12 000 €",
+      priceSubtext: "Hors taxes",
+      isPremium: true
+    },
+    {
+      title: "SaaS Starter",
+      colorTitle: "text-white",
+      colorDescription: "text-zinc-400",
+      description: "Application SaaS moderne avec fonctionnalités essentielles",
+      headerGradient: "bg-gradient-to-br from-black to-sky-600/40",
+      iconColor: "cyan",
+      features: [
+        "Architecture multi-tenant sécurisée",
+        "Authentification & gestion des utilisateurs",
+        "Dashboard administrateur intuitif",
+        "API REST documentée & intégrations",
+        "Système de paiements récurrents (Stripe)",
+        "Analytics utilisateurs & performance"
+      ],
+      deliveryTime: "4-6 semaines",
+      priceRange: "3 000 € – 5 500 €",
+      priceSubtext: "Hors taxes"
+    },
+    {
+      title: "SaaS Premium",
+      colorTitle: "text-white",
+      colorDescription: "text-zinc-400",
+      description: "Plateforme SaaS enterprise avec intelligence artificielle",
+      headerGradient: "bg-gradient-to-br from-black to-violet-600/40",
+      iconColor: "violet",
+      features: [
+        "Architecture microservices scalable",
+        "IA intégrée & machine learning",
+        "White-label & multi-domaines",
+        "Intégrations enterprise (SSO, LDAP)",
+        "Analytics avancés"
+      ],
+      deliveryTime: "8-12 semaines",
+      priceRange: "8 000 € – 18 000 €",
+      priceSubtext: "Hors taxes",
+      isPremium: true
+    },
+    {
+      title: "Marketplace",
+      colorTitle: "text-white",
+      colorDescription: "text-zinc-400",
+      description: "Plateforme multi-vendeurs avec gestion des commissions et des produits",
+      headerGradient: "bg-gradient-to-br from-black to-sky-600/40",
+      iconColor: "cyan",
+      features: [
+        "Gestion multi-vendeurs & onboarding",
+        "Système de commissions automatisé",
+        "Dashboard vendeur & acheteur séparés",
+        "Modération produits & système d'avis",
+        "Paiements escrow & dispute management",
+        "Analytics marketplace & reporting financier"
+      ],
+      deliveryTime: "6-10 semaines",
+      priceRange: "6 000 € – 14 000 €",
       priceSubtext: "Hors taxes",
       isPremium: true
     }
