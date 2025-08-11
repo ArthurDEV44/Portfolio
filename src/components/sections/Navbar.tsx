@@ -3,13 +3,18 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Mail } from 'lucide-react';
+import { Home, Mail, Calculator } from 'lucide-react';
 
 const navigation = [
   { 
     name: "Accueil", 
     href: "/",
     icon: Home
+  },
+  { 
+    name: "Tarifs", 
+    href: "/tarifs",
+    icon: Calculator
   },
   { 
     name: "Contact", 
