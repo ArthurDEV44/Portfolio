@@ -1,6 +1,7 @@
 // Portfolio configuration
 export const siteConfig = {
   name: "Arthur Jean",
+  company: "StriveX",
   handle: "arthurjean.com",
   role: "Solo Indie Maker",
   pitch: "I build developer tools for the new way of coding.",
@@ -126,6 +127,7 @@ export interface Project {
   tags: string[];
   url: string | null;
   meta: string;
+  rainbow?: boolean;
 }
 
 export const projects: Project[] = [
@@ -135,6 +137,23 @@ export const projects: Project[] = [
     tags: ["Dev Tool", "Rust", "GPU"],
     url: "https://paneflow.dev",
     meta: "2025, Open source",
+    rainbow: true,
+  },
+  {
+    title: "Rust Doctor",
+    description:
+      "The one-command health check for your Rust project. rust-doctor scans for security, performance, correctness, architecture, and dependency issues, then folds everything into a single 0–100 score with diagnostics you can act on.",
+    tags: ["Dev Tool", "Rust", "MCP"],
+    url: "https://rust-doctor.vercel.app",
+    meta: "2025, Open source",
+  },
+  {
+    title: "Mistral Vibe RS",
+    description:
+      "Independent, from-scratch Rust implementation of the Mistral Vibe coding agent, chasing full parity with the upstream CLI, terminal interface, agent runtime, tools, and ACP surface.",
+    tags: ["CLI", "Rust", "AI Agents"],
+    url: "https://github.com/arthjean/mistral-vibe-rs",
+    meta: "2026, Open source",
   },
   {
     title: "Pyxis",
@@ -153,12 +172,20 @@ export const projects: Project[] = [
     meta: "2025, Open source",
   },
   {
-    title: "Rust Doctor",
+    title: "NZXT Control Linux",
     description:
-      "The one-command health check for your Rust project. rust-doctor scans for security, performance, correctness, architecture, and dependency issues, then folds everything into a single 0–100 score with diagnostics you can act on.",
-    tags: ["Dev Tool", "Rust", "MCP"],
-    url: "https://rust-doctor.vercel.app",
-    meta: "2025, Open source",
+      "Native Rust and GPUI desktop app to monitor and control NZXT Kraken and RGB hardware on Linux. Local only, with no account, cloud, or browser runtime. Unofficial.",
+    tags: ["Desktop App", "Rust", "Linux"],
+    url: "https://github.com/arthjean/nzxt-control-linux",
+    meta: "2026, Open source",
+  },
+  {
+    title: "OpenbookLM",
+    description:
+      "Multi-LLM alternative to NotebookLM: document ingestion, hybrid retrieval with reranking, and grounded chat that cites every source. Rust and Axum backend, Next.js client, Apache-2.0 core.",
+    tags: ["RAG", "Rust", "Next.js"],
+    url: "https://github.com/arthjean/openbooklm-core",
+    meta: "2026, Open core",
   },
 ];
 
@@ -265,6 +292,65 @@ export const journey: JourneyStep[] = [
     description:
       "Deep Claude Code workflow: skills, subagents, multi-agent workflows, swarm mode, and MCP. Codex is part of the loop for PRDs and code review.",
     current: true,
+  },
+];
+
+// Experience
+export interface ExperienceRole {
+  title: string;
+  contract: string;
+  period: string;
+  duration: string;
+  setup: string;
+  highlights: string[];
+}
+
+export interface Experience {
+  company: string;
+  logo: "strivex" | "avancial";
+  location: string;
+  roles: ExperienceRole[];
+}
+
+export const experiences: Experience[] = [
+  {
+    company: "StriveX",
+    logo: "strivex",
+    location: "Nantes, France",
+    roles: [
+      {
+        title: "Founder & Software Engineer",
+        contract: "Full-time",
+        period: "07.2025 – Present",
+        duration: "1 yr 2 mos",
+        setup: "Remote",
+        highlights: [
+          "Paneflow: a native Rust and GPUI workspace for coding agents, shipped on Linux, macOS, and Windows.",
+          "Pyxis: a native Rust coding agent with a headless core, tooling, sessions, and a Linux sandbox.",
+          "Distill: a TypeScript MCP server that shrinks LLM context and maps codebase structure.",
+          "Open source: two Rust fixes merged into Zed.",
+        ],
+      },
+    ],
+  },
+  {
+    company: "Avancial",
+    logo: "avancial",
+    location: "Nantes, France",
+    roles: [
+      {
+        title: "Full Stack Software Engineer",
+        contract: "Fixed-term",
+        period: "07.2024 – 06.2025",
+        duration: "1 yr",
+        setup: "On-site",
+        highlights: [
+          "Sole developer on the team, from architecture through production.",
+          "Designed and shipped an internal Gantt tool on an Angular and Fastify stack, backed by a shared UI component set.",
+          "Automated deployments to Azure virtual machines.",
+        ],
+      },
+    ],
   },
 ];
 
