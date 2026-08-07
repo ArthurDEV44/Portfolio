@@ -2,7 +2,7 @@ import { GeistMono } from "geist/font/mono";
 import { GeistPixelCircle, GeistPixelGrid } from "geist/font/pixel";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata, Viewport } from "next";
-import { Hanken_Grotesk } from "next/font/google";
+import { Hanken_Grotesk, Instrument_Serif, Petemoss } from "next/font/google";
 import { siteConfig } from "@/lib/site.config";
 import "./globals.css";
 import { Providers } from "./providers";
@@ -10,6 +10,20 @@ import { Providers } from "./providers";
 const hankenGrotesk = Hanken_Grotesk({
   variable: "--font-hanken-grotesk",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const petemoss = Petemoss({
+  variable: "--font-signature",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -38,7 +52,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f1ebe8" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#0c173f" },
   ],
 };
@@ -55,7 +69,7 @@ export default function RootLayout({
         <script
           // biome-ignore lint/security/noDangerouslySetInnerHtml: inline script for theme flash prevention
           dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`,
+            __html: `try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');document.documentElement.dataset.grid=localStorage.getItem('grid-mode')==='off'?'off':'on'}catch(e){}`,
           }}
         />
         {/* Mastodon profile verification (rel=me, IndieWeb-style). Lets
@@ -63,7 +77,7 @@ export default function RootLayout({
         <link rel="me" href={siteConfig.links.mastodon} />
       </head>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelGrid.variable} ${GeistPixelCircle.variable} ${hankenGrotesk.variable} antialiased`}
+        className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelGrid.variable} ${GeistPixelCircle.variable} ${hankenGrotesk.variable} ${instrumentSerif.variable} ${petemoss.variable} antialiased`}
       >
         <a
           href="#main-content"

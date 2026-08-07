@@ -1,93 +1,71 @@
-"use client";
-
 import { ArrowUpRight } from "lucide-react";
 import { clients } from "@/lib/site.config";
 
 export function ClientsSection() {
   return (
-    <section id="clients" className="section" aria-labelledby="clients-heading">
-      <div className="reveal" style={{ marginBottom: 56 }}>
-        <div className="eyebrow" style={{ marginBottom: 20 }}>
-          02 / Work
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            gap: 32,
-            flexWrap: "wrap",
-          }}
+    <section id="clients" className="pt-20" aria-labelledby="clients-heading">
+      <div className="flex flex-wrap items-baseline justify-between gap-3 border-y border-dashed border-grid-soft p-4">
+        <h2
+          id="clients-heading"
+          className="font-serif text-3xl leading-normal text-foreground"
         >
-          <h2
-            id="clients-heading"
-            className="font-serif"
-            style={{
-              fontSize: "clamp(32px, 5vw, 56px)",
-              lineHeight: 1,
-              margin: 0,
-              letterSpacing: "-0.025em",
-              fontWeight: 400,
-              maxWidth: 720,
-            }}
-          >
-            Client{" "}
-            <span style={{ fontStyle: "italic", color: "var(--fg-muted)" }}>
-              work
-            </span>
-            .
-          </h2>
-          <p
-            className="font-mono"
-            style={{
-              fontSize: 12,
-              color: "var(--fg-muted)",
-              textTransform: "uppercase",
-              letterSpacing: "0.14em",
-              margin: 0,
-            }}
-          >
-            {String(clients.length).padStart(2, "0")} sites
-          </p>
-        </div>
+          Client <span className="italic text-muted-foreground">work</span>.
+        </h2>
+        <p className="text-sm font-light text-muted-foreground">
+          {String(clients.length).padStart(2, "0")} sites
+        </p>
       </div>
 
-      <div className="proj-index reveal">
-        {clients.map((c, i) => {
+      <ul>
+        {clients.map((client, index) => {
           const content = (
             <>
-              <span className="num">{String(i + 1).padStart(2, "0")}</span>
-              <span className="title">
-                {c.title}
-                <span className="desc">{c.description}</span>
-              </span>
-              <span className="meta">{c.year}</span>
-              <span className="arrow">
-                {c.url ? <ArrowUpRight size={14} strokeWidth={1.5} /> : null}
-              </span>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="inline-flex items-center gap-1.5 font-sans text-base font-normal tracking-tight text-foreground">
+                  {client.title}
+                  {client.url && (
+                    <ArrowUpRight
+                      aria-hidden="true"
+                      size={13}
+                      strokeWidth={1.7}
+                      className="text-[color:var(--brand)] opacity-0 transition-opacity group-hover:opacity-100"
+                    />
+                  )}
+                </h3>
+                <p className="text-sm font-light text-muted-foreground">
+                  {client.year}
+                </p>
+              </div>
+
+              <p className="mt-2 font-sans text-sm font-light leading-relaxed tracking-tight text-muted-foreground">
+                {client.description}
+              </p>
             </>
           );
 
-          if (c.url) {
-            return (
-              <a
-                key={c.title}
-                href={c.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="proj-row"
-              >
-                {content}
-              </a>
-            );
-          }
           return (
-            <article key={c.title} className="proj-row">
-              {content}
-            </article>
+            <li
+              key={client.title}
+              className={`border-y border-dashed border-grid-soft ${
+                index === 0 ? "mt-6" : "mt-1"
+              }`}
+            >
+              {client.url ? (
+                <a
+                  href={client.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block p-4"
+                >
+                  {content}
+                </a>
+              ) : (
+                <div className="p-4">{content}</div>
+              )}
+            </li>
           );
         })}
-      </div>
+      </ul>
     </section>
   );
 }

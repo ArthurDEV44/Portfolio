@@ -1,4 +1,4 @@
-import { FooterSection, NavbarSection } from "@/components";
+import { GridShell } from "@/components";
 
 export default function LegalLayout({
   children,
@@ -6,12 +6,14 @@ export default function LegalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <NavbarSection />
-      <main id="main-content" tabIndex={-1} className="legal-main">
+    <GridShell>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="border-y border-dashed border-grid-soft p-4 outline-none"
+      >
         <article className="legal-article">{children}</article>
       </main>
-      <FooterSection />
-    </>
+    </GridShell>
   );
 }

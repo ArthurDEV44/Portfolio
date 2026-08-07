@@ -1,14 +1,17 @@
 // Central export for all components
 
+// Layout
+export { GridShell } from "./layout/GridShell";
 export { BiographySection } from "./sections/BiographySection";
 export { ClientsSection } from "./sections/ClientsSection";
 export { CtaSection } from "./sections/CtaSection";
+export { ExperienceSection } from "./sections/ExperienceSection";
 export { FaqSection } from "./sections/FaqSection";
 export { FooterSection } from "./sections/FooterSection";
 export { HeroSection } from "./sections/HeroSection";
 export { JourneySection } from "./sections/JourneySection";
-export { NavbarSection } from "./sections/NavbarSection";
 export { ProjectsSection } from "./sections/ProjectsSection";
+export { SignoffSection } from "./sections/SignoffSection";
 export { ValueSection } from "./sections/ValueSection";
 
 // UI Components

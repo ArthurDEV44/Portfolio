@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import {
   BiographySection,
+  ExperienceSection,
   FooterSection,
+  GridShell,
   HeroSection,
-  NavbarSection,
   ProjectsSection,
+  SignoffSection,
 } from "@/components";
 import { getJsonLd } from "@/lib/json-ld";
 import { siteConfig } from "@/lib/site.config";
@@ -76,18 +78,16 @@ export default function Home() {
           __html: JSON.stringify(jsonLd.graph).replace(/</g, "\\u003c"),
         }}
       />
-      <NavbarSection />
-
-      <main
-        id="main-content"
-        tabIndex={-1}
-        className="min-h-screen outline-none"
-      >
-        <HeroSection />
-        <BiographySection />
-        <ProjectsSection />
-        <FooterSection />
-      </main>
+      <GridShell>
+        <main id="main-content" tabIndex={-1} className="outline-none">
+          <HeroSection />
+          <BiographySection />
+          <ExperienceSection />
+          <ProjectsSection />
+          <SignoffSection />
+          <FooterSection />
+        </main>
+      </GridShell>
     </>
   );
 }

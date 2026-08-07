@@ -5,116 +5,73 @@ import { useState } from "react";
 import { faqItems, siteConfig } from "@/lib/site.config";
 
 export function FaqSection() {
-  const [open, setOpen] = useState<number>(0);
+  const [open, setOpen] = useState(0);
 
   return (
-    <section id="faq" className="section" aria-labelledby="faq-heading">
-      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] gap-12 md:gap-16 items-start">
-        <div className="reveal" style={{ position: "sticky", top: 96 }}>
-          <div className="eyebrow" style={{ marginBottom: 20 }}>
-            05 / FAQ
-          </div>
-          <h2
-            id="faq-heading"
-            className="font-serif"
-            style={{
-              fontSize: "clamp(32px, 5vw, 56px)",
-              lineHeight: 1,
-              margin: "0 0 24px",
-              letterSpacing: "-0.025em",
-              fontWeight: 400,
-            }}
-          >
-            Straight{" "}
-            <span style={{ fontStyle: "italic", color: "var(--fg-muted)" }}>
-              answers
-            </span>
-            .
-          </h2>
-          <p
-            style={{
-              color: "var(--fg-muted)",
-              lineHeight: 1.6,
-              marginBottom: 32,
-            }}
-          >
-            Question not listed?{" "}
-            <a
-              className="ink-link"
-              href={siteConfig.links.cal}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "var(--fg)" }}
-            >
-              Book a slot
-            </a>
-            .
-          </p>
-          <div
-            className="font-mono"
-            style={{
-              fontSize: 11,
-              color: "var(--fg-faint)",
-              textTransform: "uppercase",
-              letterSpacing: "0.14em",
-            }}
-          >
-            {faqItems.length} questions
-          </div>
-        </div>
-        <div className="reveal">
-          {faqItems.map((it, i) => {
-            const isOpen = open === i;
-            return (
-              <div
-                key={it.question}
-                className={`faq-item ${isOpen ? "open" : ""}`}
-              >
-                <button
-                  type="button"
-                  className="faq-trigger"
-                  onClick={() => setOpen(isOpen ? -1 : i)}
-                  aria-expanded={isOpen}
-                >
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      gap: 16,
-                      alignItems: "baseline",
-                    }}
-                  >
-                    <span
-                      className="font-mono"
-                      style={{
-                        fontSize: 11,
-                        color: "var(--fg-faint)",
-                        letterSpacing: "0.12em",
-                      }}
-                    >
-                      0{i + 1}
-                    </span>
-                    <span>{it.question}</span>
-                  </span>
-                  <span className="chev">
-                    <Plus size={12} strokeWidth={2} />
-                  </span>
-                </button>
-                <div className="faq-content">
-                  <div
-                    style={{
-                      paddingLeft: 36,
-                      paddingRight: 40,
-                      paddingTop: 4,
-                    }}
-                  >
-                    {it.answer}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+    <section id="faq" className="pt-20" aria-labelledby="faq-heading">
+      <div className="flex flex-wrap items-baseline justify-between gap-3 border-y border-dashed border-grid-soft p-4">
+        <h2
+          id="faq-heading"
+          className="font-serif text-3xl leading-normal text-foreground"
+        >
+          Straight <span className="italic text-muted-foreground">answers</span>
+          .
+        </h2>
+        <p className="text-sm font-light text-muted-foreground">
+          {faqItems.length} questions
+        </p>
       </div>
+
+      <p className="mt-6 border-y border-dashed border-grid-soft px-4 py-1 text-sm font-light text-muted-foreground">
+        Question not listed?{" "}
+        <a
+          href={siteConfig.links.cal}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="copy-link"
+        >
+          Book a slot
+        </a>
+        .
+      </p>
+
+      <ul>
+        {faqItems.map((item, index) => {
+          const isOpen = open === index;
+
+          return (
+            <li
+              key={item.question}
+              className="mt-1 border-y border-dashed border-grid-soft"
+            >
+              <button
+                type="button"
+                onClick={() => setOpen(isOpen ? -1 : index)}
+                aria-expanded={isOpen}
+                className="flex w-full items-center justify-between gap-3 px-4 py-2 text-left"
+              >
+                <span className="font-sans text-base font-normal tracking-tight text-foreground">
+                  {item.question}
+                </span>
+                <Plus
+                  aria-hidden="true"
+                  size={13}
+                  strokeWidth={1.7}
+                  className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
+                    isOpen ? "rotate-45" : ""
+                  }`}
+                />
+              </button>
+
+              {isOpen && (
+                <p className="px-4 pb-3 font-sans text-sm font-light leading-relaxed tracking-tight text-muted-foreground">
+                  {item.answer}
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }

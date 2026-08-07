@@ -6,37 +6,50 @@
 :root {
   color-scheme: light;
 
-  /* Paneflow Porcelain light palette, copied from its canonical web tokens. */
-  --porcelain-canvas: oklch(0.9439 0.0077 48.7);
-  --porcelain-elevated: oklch(0.9233 0.0102 345.4);
-  --porcelain-panel: oklch(0.8821 0.0218 316.5);
-  --porcelain-raised: oklch(0.8249 0.0343 300.8);
-  --porcelain-hairline: oklch(0.7377 0.0402 291.9);
-  --porcelain-hairline-hover: oklch(0.6559 0.046 282.1);
-  --porcelain-ink: oklch(0.2234 0.0779 267.9);
-  --porcelain-muted: oklch(0.4073 0.0536 271.4);
-  --porcelain-subtle: oklch(0.4357 0.053 270.3);
-  --porcelain-indigo: oklch(0.4232 0.1398 270.7);
-  --porcelain-indigo-hover: oklch(0.3692 0.1224 270.9);
-  --porcelain-media: oklch(0.8326 0.0403 285.5);
+  /* Neutral light ramp: pure achromatic (C = 0), white canvas, gray-to-black ink. */
+  --neutral-canvas: oklch(1 0 0);
+  --neutral-elevated: oklch(0.985 0 0);
+  --neutral-panel: oklch(0.97 0 0);
+  --neutral-raised: oklch(0.922 0 0);
+  --neutral-hairline: oklch(0.87 0 0);
+  --neutral-hairline-hover: oklch(0.708 0 0);
+  --neutral-subtle: oklch(0.556 0 0);
+  --neutral-muted: oklch(0.439 0 0);
+  --neutral-ink: oklch(0.205 0 0);
+
+  /* Navy anchors reused by the dark ramp below. */
+  --navy-ink: oklch(0.2234 0.0779 267.9);
+  --navy-canvas: oklch(0.9439 0.0077 48.7);
+  --navy-raised: oklch(0.8249 0.0343 300.8);
+  --navy-hairline: oklch(0.7377 0.0402 291.9);
+  --navy-media: oklch(0.8326 0.0403 285.5);
 
   /* Light theme semantic mapping. */
-  --bg: var(--porcelain-canvas);
-  --fg: var(--porcelain-ink);
-  --fg-muted: var(--porcelain-muted);
-  --fg-faint: var(--porcelain-subtle);
-  --brand: var(--porcelain-indigo);
-  --brand-hover: var(--porcelain-indigo-hover);
-  --brand-contrast: var(--porcelain-canvas);
-  --surface-elevated: var(--porcelain-elevated);
-  --surface: var(--porcelain-panel);
-  --surface-raised: var(--porcelain-raised);
-  --line: var(--porcelain-hairline);
-  --line-hover: var(--porcelain-hairline-hover);
+  --bg: var(--neutral-canvas);
+  --fg: var(--neutral-ink);
+  --fg-muted: var(--neutral-muted);
+  --fg-faint: var(--neutral-subtle);
+  --brand: oklch(0.4232 0.1398 270.7);
+  --brand-hover: oklch(0.3692 0.1224 270.9);
+  --brand-contrast: var(--neutral-canvas);
+  --surface-elevated: var(--neutral-elevated);
+  --surface: var(--neutral-panel);
+  --surface-raised: var(--neutral-raised);
+  --line: var(--neutral-hairline);
+  --line-hover: var(--neutral-hairline-hover);
   --available: oklch(0.49 0.12 150);
   --info: oklch(0.5 0.12 250);
-  --glass-highlight: oklch(0.9439 0.0077 48.7 / 0.65);
+  --glass-highlight: oklch(1 0 0 / 0.65);
   --radius: 0;
+
+  /* Rainbow accent: one lightness/chroma pair, hues supplied per gradient stop. */
+  --rainbow-l: 0.56;
+  --rainbow-c: 0.17;
+
+  /* Grid mode: structural rules and softer row rules. Both collapse to
+     transparent when grid mode is off, which is the whole toggle. */
+  --grid-line: color-mix(in oklch, var(--line) 62%, transparent);
+  --grid-line-soft: color-mix(in oklch, var(--line) 34%, transparent);
 
   --background: var(--bg);
   --foreground: var(--fg);
@@ -53,7 +66,7 @@
   --muted: var(--surface-elevated);
   --muted-foreground: var(--fg-muted);
   --destructive: oklch(0.505 0.195 25);
-  --destructive-foreground: var(--porcelain-canvas);
+  --destructive-foreground: var(--neutral-canvas);
   --border: var(--line);
   --input: var(--line);
   --ring: var(--brand);
@@ -75,14 +88,14 @@
 .dark {
   color-scheme: dark;
 
-  /* Navy dark ramp derived from the Porcelain lightness hierarchy. */
-  --bg: var(--porcelain-ink);
-  --fg: var(--porcelain-canvas);
-  --fg-muted: var(--porcelain-raised);
-  --fg-faint: var(--porcelain-hairline);
+  /* Navy dark ramp, unchanged by the neutral light theme. */
+  --bg: var(--navy-ink);
+  --fg: var(--navy-canvas);
+  --fg-muted: var(--navy-raised);
+  --fg-faint: var(--navy-hairline);
   --brand: oklch(0.76 0.1 270.7);
-  --brand-hover: var(--porcelain-media);
-  --brand-contrast: var(--porcelain-ink);
+  --brand-hover: var(--navy-media);
+  --brand-contrast: var(--navy-ink);
   --surface-elevated: oklch(0.244 0.075 269);
   --surface: oklch(0.2852 0.072 272);
   --surface-raised: oklch(0.3424 0.067 276);
@@ -93,10 +106,19 @@
   --glass-highlight: oklch(0.9439 0.0077 48.7 / 0.1);
   --accent: var(--surface-raised);
   --destructive: oklch(0.704 0.18 22);
-  --destructive-foreground: var(--porcelain-ink);
+  --destructive-foreground: var(--navy-ink);
+  --rainbow-l: 0.79;
+  --rainbow-c: 0.15;
+}
+
+:root[data-grid="off"] {
+  --grid-line: transparent;
+  --grid-line-soft: transparent;
 }
 
 @theme inline {
+  --color-grid: var(--grid-line);
+  --color-grid-soft: var(--grid-line-soft);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-border: var(--border);
@@ -177,71 +199,37 @@
   }
 }
 
-.atmos {
-  display: none;
-}
-
 .font-mono {
   font-family: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
 }
 
 .font-sans {
   font-family: var(--font-geist-sans), "Geist", system-ui, sans-serif;
-  letter-spacing: 0;
 }
 
 .font-serif {
   font-family:
-    var(--font-hanken-grotesk), "Hanken Grotesk", system-ui, sans-serif;
-  letter-spacing: 0;
+    var(--font-instrument-serif), "Instrument Serif", ui-serif, Georgia, serif;
+  font-weight: 400;
 }
 
-.nav {
-  width: min(640px, calc(100% - 40px));
-  margin: 32px auto 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+.font-signature {
+  font-family: var(--font-signature), "Petemoss", cursive;
+  font-weight: 400;
 }
 
-.nav-brand,
-.nav-link,
-.link-row a,
-.work-link,
-.ink-link {
-  color: inherit;
-  text-decoration: none;
+/* Grid mode fades the rules in and out instead of snapping them. */
+[class~="border-grid"],
+[class~="border-grid-soft"] {
+  transition: border-color 260ms ease;
 }
 
-.nav-brand {
-  font-size: 15px;
-  font-weight: 600;
+.scrollbar-hide {
+  scrollbar-width: none;
 }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.nav-link {
-  color: var(--fg-muted);
-  font-size: 14px;
-}
-
-.nav-link:hover {
-  color: var(--fg);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.ink-link:hover {
-  color: var(--fg);
-}
-
-.link-row a:hover {
-  color: var(--fg);
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 .icon-btn {
@@ -258,58 +246,6 @@
   cursor: pointer;
 }
 
-.hero,
-.section,
-.footer-inner {
-  width: min(640px, calc(100% - 40px));
-  margin: 0 auto;
-}
-
-.hero {
-  padding-top: 72px;
-}
-
-.hero-intro {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 32px;
-}
-
-.hero-text {
-  min-width: 0;
-  flex: 1;
-}
-
-.hero-avatar {
-  position: relative;
-  width: 112px;
-  height: 112px;
-  flex: 0 0 112px;
-  overflow: hidden;
-  border-radius: 50%;
-}
-
-.hero-kicker,
-.list-title,
-.section-meta {
-  margin: 0;
-  color: var(--fg-faint);
-  font-family: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
-  font-size: 12px;
-}
-
-.hero-title {
-  margin: 10px 0 0;
-  max-width: 600px;
-  font-family:
-    var(--font-hanken-grotesk), "Hanken Grotesk", system-ui, sans-serif;
-  font-size: 26px;
-  line-height: 1.34;
-  font-weight: 580;
-  letter-spacing: 0;
-}
-
 .copy-link {
   color: var(--fg);
   font-weight: 620;
@@ -319,98 +255,6 @@
 .copy-link:hover {
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-
-.link-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 24px;
-}
-
-.link-row a {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--fg-muted);
-  font-size: 14px;
-}
-
-.work-list {
-  list-style: none;
-  margin: 12px 0 0;
-  padding: 0;
-}
-
-.section {
-  padding-top: 48px;
-}
-
-.bio-body {
-  display: grid;
-  gap: 18px;
-  margin-top: 12px;
-}
-
-.bio-body p {
-  margin: 0;
-  color: var(--fg-muted);
-  font-size: 15px;
-  line-height: 1.76;
-}
-
-.work-list {
-  display: grid;
-  gap: 20px;
-}
-
-.work-link {
-  display: grid;
-  gap: 6px;
-}
-
-.work-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  width: fit-content;
-  font-family:
-    var(--font-hanken-grotesk), "Hanken Grotesk", system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.work-icon {
-  color: var(--brand);
-  opacity: 0;
-  transform: rotate(-45deg);
-  transition:
-    opacity 150ms ease,
-    visibility 150ms ease;
-  visibility: hidden;
-}
-
-.work-link:hover .work-icon {
-  opacity: 1;
-  visibility: visible;
-}
-
-.work-link:hover .work-title {
-  color: var(--fg);
-}
-
-.work-desc {
-  max-width: 600px;
-  color: var(--fg-muted);
-  font-size: 14px;
-  line-height: 1.68;
-}
-
-.legal-main {
-  width: min(640px, calc(100% - 40px));
-  margin: 0 auto;
-  padding-top: 72px;
-  outline: none;
 }
 
 .legal-article {
@@ -438,8 +282,10 @@
 .legal-article p,
 .legal-article li {
   color: var(--fg-muted);
-  font-size: 15px;
-  line-height: 1.72;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.625;
+  letter-spacing: -0.01em;
 }
 
 .legal-article p {
@@ -465,26 +311,34 @@
   color: var(--fg-muted);
 }
 
-.footer {
-  padding: 72px 0 40px;
+.rainbow-text {
+  background-image: linear-gradient(
+    100deg,
+    oklch(var(--rainbow-l) var(--rainbow-c) 25),
+    oklch(var(--rainbow-l) var(--rainbow-c) 70),
+    oklch(var(--rainbow-l) var(--rainbow-c) 145),
+    oklch(var(--rainbow-l) var(--rainbow-c) 200),
+    oklch(var(--rainbow-l) var(--rainbow-c) 265),
+    oklch(var(--rainbow-l) var(--rainbow-c) 320),
+    oklch(var(--rainbow-l) var(--rainbow-c) 25)
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: rainbow-shift 9s linear infinite;
 }
 
-.footer-inner {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 16px;
+@keyframes rainbow-shift {
+  to {
+    background-position: 200% 0;
+  }
 }
 
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.footer-links a {
-  color: var(--fg-muted);
-  font-size: 12px;
+@media (prefers-reduced-motion: reduce) {
+  .rainbow-text {
+    animation: none;
+  }
 }
 
 ::selection {
@@ -498,37 +352,6 @@
 }
 
 @media (max-width: 560px) {
-  .nav,
-  .hero,
-  .section,
-  .legal-main,
-  .footer-inner {
-    width: min(640px, calc(100% - 32px));
-  }
-
-  .nav {
-    margin-top: 24px;
-  }
-
-  .hero {
-    padding-top: 56px;
-  }
-
-  .hero-intro {
-    gap: 20px;
-  }
-
-  .hero-avatar {
-    width: 84px;
-    height: 84px;
-    flex-basis: 84px;
-  }
-
-  .hero-title {
-    font-size: 24px;
-    line-height: 1.36;
-  }
-
   .legal-article h1 {
     font-size: 28px;
     line-height: 1.24;

@@ -2,120 +2,40 @@ import { valuePillars } from "@/lib/site.config";
 
 export function ValueSection() {
   return (
-    <section
-      id="value"
-      className="section"
-      style={{ overflow: "hidden" }}
-      aria-labelledby="value-heading"
-    >
-      <div className="section-mesh value-mesh-1" aria-hidden="true" />
-      <div className="section-mesh value-mesh-2" aria-hidden="true" />
-
-      <div className="reveal" style={{ marginBottom: 56 }}>
-        <div className="eyebrow" style={{ marginBottom: 20 }}>
-          03 / Approach
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            gap: 32,
-            flexWrap: "wrap",
-          }}
+    <section id="value" className="pt-20" aria-labelledby="value-heading">
+      <div className="flex flex-wrap items-baseline justify-between gap-3 border-y border-dashed border-grid-soft p-4">
+        <h2
+          id="value-heading"
+          className="font-serif text-3xl leading-normal text-foreground"
         >
-          <h2
-            id="value-heading"
-            className="font-serif"
-            style={{
-              fontSize: "clamp(32px, 5vw, 56px)",
-              lineHeight: 1,
-              margin: 0,
-              letterSpacing: "-0.025em",
-              fontWeight: 400,
-              maxWidth: 720,
-            }}
-          >
-            What I bring,{" "}
-            <span style={{ fontStyle: "italic", color: "var(--fg-muted)" }}>
-              in practice
-            </span>
-            .
-          </h2>
-          <p
-            className="font-mono"
-            style={{
-              fontSize: 12,
-              color: "var(--fg-muted)",
-              textTransform: "uppercase",
-              letterSpacing: "0.14em",
-              margin: 0,
-            }}
-          >
-            04 pillars
-          </p>
-        </div>
+          What I bring,{" "}
+          <span className="italic text-muted-foreground">in practice</span>.
+        </h2>
+        <p className="text-sm font-light text-muted-foreground">04 pillars</p>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
-          gap: 1,
-          background: "var(--line)",
-          borderRadius: "var(--radius-lg)",
-          overflow: "hidden",
-          border: "1px solid var(--line)",
-        }}
-      >
-        {valuePillars.map((v) => (
-          <div
-            key={v.title}
-            className="reveal hover-lift"
-            style={{
-              background: "var(--bg)",
-              padding: "36px 32px",
-              minHeight: 220,
-              position: "relative",
-            }}
+      <ul>
+        {valuePillars.map((pillar, index) => (
+          <li
+            key={pillar.title}
+            className={`border-y border-dashed border-grid-soft p-4 ${
+              index === 0 ? "mt-6" : "mt-1"
+            }`}
           >
-            <div
-              className="font-mono"
-              style={{
-                fontSize: 11,
-                color: "var(--fg-faint)",
-                textTransform: "uppercase",
-                letterSpacing: "0.16em",
-                marginBottom: 20,
-              }}
-            >
-              {v.num}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h3 className="font-sans text-base font-normal tracking-tight text-foreground">
+                {pillar.title}
+              </h3>
+              <p className="text-sm font-light text-muted-foreground">
+                {pillar.num}
+              </p>
             </div>
-            <h3
-              className="font-serif"
-              style={{
-                fontSize: 26,
-                fontWeight: 400,
-                letterSpacing: "-0.02em",
-                margin: "0 0 12px",
-              }}
-            >
-              {v.title}
-            </h3>
-            <p
-              style={{
-                color: "var(--fg-muted)",
-                lineHeight: 1.6,
-                margin: 0,
-                fontSize: 15,
-              }}
-            >
-              {v.description}
+            <p className="mt-2 font-sans text-sm font-light leading-relaxed tracking-tight text-muted-foreground">
+              {pillar.description}
             </p>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
