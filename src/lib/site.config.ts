@@ -34,7 +34,7 @@ export const siteConfig = {
   links: {
     email: "arthur.jean@strivex.fr",
     linkedin: "https://www.linkedin.com/in/arthur-jean-401b56239/",
-    github: "https://github.com/ArthurDEV44",
+    github: "https://github.com/arthjean",
     x: "https://x.com/arthurjdev",
     mastodon: "https://mastodon.social/@arthurjdev",
     cal: "https://cal.com/arthurjean/30min",
@@ -141,7 +141,7 @@ export const projects: Project[] = [
     description:
       "Multi-provider Rust CLI for fast agentic coding workflows, designed to connect natively with Paneflow.",
     tags: ["CLI", "Rust", "AI Agents"],
-    url: "https://github.com/ArthurDEV44/pyxis",
+    url: "https://github.com/arthjean/pyxis",
     meta: "2026, Open source",
   },
   {
@@ -175,7 +175,7 @@ export const clients: Client[] = [
     title: "Open Source Contributions",
     description:
       "Active contributor to Zed and other developer infrastructure projects.",
-    url: "https://github.com/ArthurDEV44",
+    url: "https://github.com/arthjean",
     year: "Ongoing",
   },
   {
