@@ -323,7 +323,13 @@
   --article-measure: 610px;
   --article-rhythm: 26px;
   --minimap-dash: 24px;
-  --minimap-gutter: 28px;
+
+  /* Distance from the dashes to the text column. Wide enough that the stack
+     reads as its own object in the margin rather than as a ragged left edge of
+     the paragraph; every pixel added here also raises the container width the
+     minimap needs, so it is a trade against the range of viewports that get
+     it at all. */
+  --minimap-gutter: 80px;
 
   /* The minimap appears on the space the article actually got, not on the
      viewport: the shell spends a fixed 640px on its own rails, so the same
@@ -386,7 +392,9 @@
   background: var(--fg-faint);
   transform: translateY(-50%) scaleX(calc(1 + var(--proximity) * 0.75));
   transform-origin: right center;
-  transition: background-color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    height 160ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* Three lengths, so the stack reads as document rhythm: a section is the full
@@ -405,6 +413,13 @@
 
 .article-minimap a.dash:hover::before,
 .article-minimap a.dash:focus-visible::before {
+  background: var(--fg);
+}
+
+/* The scroll it triggers is now animated, so the mark answers the click on the
+   frame it happens rather than leaving the reader waiting on the movement. */
+.article-minimap a.dash:active::before {
+  height: 2px;
   background: var(--fg);
 }
 
@@ -441,6 +456,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .article-minimap .dash,
+  .article-minimap .dash::before,
   .article-minimap a.dash span {
     transition: none;
   }
@@ -457,7 +473,7 @@
    The shell keeps its two rails and its padding symmetric, so the text column
    is centred on the viewport and `50vw` is the same anchor the grid uses. */
 @media (min-width: 1024px) {
-  @container article (min-width: 662px) {
+  @container article (min-width: 714px) {
     .article-minimap {
       display: block;
       position: fixed;

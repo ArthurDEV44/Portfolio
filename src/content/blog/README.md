@@ -79,7 +79,7 @@ they are hidden from assistive technology and are not focusable, since a link
 with no name is worse than no link. The step between dashes is derived from the
 block count, so a long article still fits the window.
 
-It is fixed to the middle of the window and needs a 662px container to appear,
+It is fixed to the middle of the window and needs a 714px container to appear,
 which means roughly 1024px of viewport or more, with a gap between about 1250px
 and 1410px where the shell's own two rails leave the article too narrow for it.
 Wherever the minimap does not fit, the same headings are served above the text
