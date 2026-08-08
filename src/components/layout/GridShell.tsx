@@ -1,6 +1,7 @@
 import { Mail } from "lucide-react";
 import Link from "next/link";
 
+import { NavLinks } from "@/components/layout/NavLinks";
 import { GithubIcon, LinkedinIcon, XIcon } from "@/components/ui/brand-icons";
 import { GridModeToggle } from "@/components/ui/GridModeToggle";
 import { LocalTime } from "@/components/ui/LocalTime";
@@ -11,6 +12,7 @@ const navItems = [
   { href: "/#hero", label: "Home" },
   { href: "/#about", label: "About" },
   { href: "/#projects", label: "Projects" },
+  { href: "/blog", label: "Blog" },
 ];
 
 const socialLinks = [
@@ -41,15 +43,10 @@ function BrandBlock() {
 function NavBlock() {
   return (
     <nav aria-label="Primary navigation" className="flex flex-col gap-1 pb-20">
-      {navItems.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className="border-grid-soft hover:text-foreground border-y border-dashed px-4 py-0.5 transition-colors"
-        >
-          {item.label}
-        </Link>
-      ))}
+      <NavLinks
+        items={navItems}
+        className="border-grid-soft aria-[current=page]:text-foreground hover:text-foreground border-y border-dashed px-4 py-0.5 transition-colors"
+      />
     </nav>
   );
 }
@@ -172,15 +169,10 @@ function MobileBar() {
           aria-label="Primary navigation"
           className="text-muted-foreground flex items-center gap-4 text-sm"
         >
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="hover:text-foreground transition-colors"
-            >
-              {item.label}
-            </Link>
-          ))}
+          <NavLinks
+            items={navItems}
+            className="aria-[current=page]:text-foreground hover:text-foreground transition-colors"
+          />
           <ThemeToggle />
         </nav>
       </div>
