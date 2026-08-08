@@ -40,6 +40,16 @@ export async function generateMetadata({
   const { meta } = post;
   const url = `${siteConfig.url}/blog/${slug}`;
 
+  /* Declared here rather than left to the file convention: the convention's
+     `alt` export cannot vary per post without pushing the image off the build
+     (see `opengraph-image.tsx`). The path is the route the build prerenders. */
+  const ogImage = {
+    url: `${url}/opengraph-image`,
+    width: 1200,
+    height: 630,
+    alt: `${meta.title} — ${siteConfig.name}`,
+  };
+
   return {
     title: meta.title,
     description: meta.description,
@@ -61,12 +71,14 @@ export async function generateMetadata({
       modifiedTime: meta.updatedAt,
       authors: [siteConfig.url],
       tags: meta.tags,
+      images: [ogImage],
     },
     twitter: {
       card: "summary_large_image",
       title: meta.title,
       description: meta.description,
       creator: "@arthurjdev",
+      images: [ogImage],
     },
     ...(meta.draft && { robots: { index: false, follow: false } }),
   };
