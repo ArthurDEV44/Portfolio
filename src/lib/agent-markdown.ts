@@ -1,3 +1,4 @@
+import type { Post } from "./blog";
 import {
   aiSkills,
   devTools,
@@ -6,7 +7,27 @@ import {
   siteConfig,
 } from "./site.config";
 
-export function buildHomepageMarkdown(): string {
+/* Type-only import above: the proxy runs at the edge and must never pull
+   `node:fs` in through this module, so posts are handed in by the caller that
+   can actually read them. Omitted, the section is not rendered at all. */
+function buildArticlesSection(posts: Post[]): string {
+  if (posts.length === 0) return "";
+
+  const list = posts
+    .map(
+      (post) =>
+        `- [${post.meta.title}](${siteConfig.url}/blog/${post.slug}) — ${post.meta.publishedAt} : ${post.meta.description}`,
+    )
+    .join("\n");
+
+  return `## Articles
+
+${list}
+
+`;
+}
+
+export function buildHomepageMarkdown(posts: Post[] = []): string {
   const stackList = mainStack
     .map((s) => `- **${s.name}** (${s.category})`)
     .join("\n");
@@ -33,10 +54,11 @@ Creator and software engineer based in France. I build developer tools for the n
 
 ${projectList}
 
-## Canonical resources
+${buildArticlesSection(posts)}## Canonical resources
 
 - [Homepage](${siteConfig.url}): Main profile page for Arthur Jean.
 - [Sitemap](${siteConfig.url}/sitemap.xml): Canonical URL inventory.
+- [RSS feed](${siteConfig.url}/rss.xml): Full article feed, RSS 2.0.
 - [Robots policy](${siteConfig.url}/robots.txt): Search and AI crawler preferences.
 
 ## Tech stack
