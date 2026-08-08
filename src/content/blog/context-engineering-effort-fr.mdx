@@ -1,0 +1,294 @@
+export const meta = {
+  title: "L'effort n'est pas un curseur de qualité",
+  description:
+    "Pourquoi monter au maximum n'améliore pas le résultat, et comment router modèle et effort par phase de travail plutôt que par réflexe.",
+  publishedAt: "2026-08-08",
+  tags: ["context-engineering", "agents", "claude-code"],
+  draft: true,
+};
+
+On a tendance à croire qu'utiliser un modèle au maximum de ses capacités
+garantit un résultat optimal. C'est faux, et c'est même souvent l'inverse.
+J'écris cet article après plusieurs années à faire tourner des agents de
+codage en production, sur des projets réels. Je prends Opus 5 comme référence
+mais cela s'applique à tous les modèles
+(gpt-5.6-sol, terra, luna, grok-4.5, Kimi K3, etc.).
+
+Le réflexe est toujours le même quand on découvre les niveaux d'effort : « il
+faut que je mette <span className="rainbow-text">max</span> pour avoir la
+meilleure sortie ». C'est précisément ce
+réflexe qui coûte cher, et pas seulement en tokens.
+
+## Ce que l'effort règle vraiment
+
+Sur Claude Code, les niveaux sont `low`, `medium`, `high`, `xhigh` et `max`.
+Première précision, parce qu'elle traîne partout :
+<span className="shimmer-text">ultracode</span> n'est pas un niveau d'effort. C'est un mot-clé d'orchestration multi-agents, qui relève
+d'une autre mécanique. Les mélanger dans la même énumération embrouille tout
+le reste du raisonnement.
+
+Ce que l'effort contrôle, c'est la profondeur de réflexion et la dépense
+globale en tokens. Un effort bas produit moins de tours de raisonnement, moins
+de préambule, et surtout des appels d'outils moins nombreux et plus
+consolidés. Un effort haut produit l'inverse : le modèle explore davantage
+avant de répondre.
+
+Et ça a une conséquence que la documentation d'Anthropic énonce noir sur
+blanc : `max` peut apporter des gains sur certains cas d'usage, mais il montre
+des rendements décroissants liés à l'augmentation de la dépense en tokens, et
+il est sujet à la sur-réflexion. `max` n'est pas `xhigh` en mieux, c'est
+`xhigh` en plus cher avec un risque de tourner en rond sur des tâches qui ne
+le méritent pas.
+
+Le corollaire est plus surprenant encore. Sur Opus 5, la recommandation
+officielle est de partir de `xhigh` pour le code et l'agentique, `high` pour le
+reste, puis de balayer vers le bas, parce que `low` et `medium` tiennent bien
+mieux qu'on ne le croit sur ce modèle. Descends d'un cran tant que la sortie
+tient.
+
+Une nuance à garder en tête avant d'aller plus loin. Dire que `low` tient bien
+n'est pas dire que tous les niveaux se valent. Sur les tâches vraiment
+difficiles, l'écart existe. Ce qui est documenté, c'est que les niveaux bas
+tiennent mieux que leur réputation, pas qu'ils sont équivalents.
+
+## Scientifiques, ingénieurs, ouvriers
+
+Prends une chaîne de production complexe, disons un lanceur. Il y a plusieurs
+degrés d'effort mental, et je dis bien mental, pas physique. Les scientifiques
+imaginent, calculent, conceptualisent. Les ingénieurs structurent, planifient,
+traduisent le concept en spécification. Les ouvriers construisent en suivant
+les plans.
+
+<figure className="article-diagram">
+  <div className="article-diagram-flow">
+    <div className="article-diagram-node">
+      <span className="article-diagram-role">Scientifiques</span>
+      <span className="article-diagram-verb">concevoir</span>
+    </div>
+    <span className="article-diagram-arrow" aria-hidden="true">▶</span>
+    <div className="article-diagram-node">
+      <span className="article-diagram-role">Ingénieurs</span>
+      <span className="article-diagram-verb">spécifier</span>
+    </div>
+    <span className="article-diagram-arrow" aria-hidden="true">▶</span>
+    <div className="article-diagram-node">
+      <span className="article-diagram-role">Ouvriers</span>
+      <span className="article-diagram-verb">exécuter</span>
+    </div>
+  </div>
+  <figcaption className="article-diagram-legend">
+    <span>effort de réflexion</span>
+    <span className="article-diagram-rule" aria-hidden="true" />
+    <span>décroissant</span>
+  </figcaption>
+</figure>
+
+Le flux va dans un seul sens, et chaque étage réduit l'espace de décision de
+l'étage suivant. C'est ce qui rend le dernier étage bon marché : il n'a plus à
+choisir.
+
+Avec les modèles et leurs efforts, c'est exactement la même chose. On ne va
+pas utiliser un effort `low` pour explorer, conceptualiser, arbitrer un
+problème ouvert. On va utiliser un raisonnement `xhigh` pour ça, et l'effort
+bas construira en suivant le plan à la lettre.
+
+Qu'est-ce qu'on y gagne ? Une économie de tokens très significative, une
+livraison plus rapide, et une qualité supérieure. Parce qu'on ne met pas un
+scientifique sur la chaîne de montage : ce n'est pas son métier, et il
+improvisera là où on attendait qu'il exécute.
+
+## Choisir le modèle avant l'effort
+
+Avant de régler le curseur, il faut savoir sur quel modèle on le règle. Et là
+il y a un piège de nommage.
+
+Chez Anthropic, la dernière génération n'est pas une ligne unique. Opus 5 est
+le successeur direct de la ligne Opus. Fable 5 est un tier séparé, au double
+du prix par token, avec un territoire déclaré différent : le raisonnement le
+plus exigeant et le travail agentique long-horizon. La documentation de
+migration est explicite au mot près : Fable 5 n'est pas le chemin de mise à
+jour par défaut de la ligne Opus, et une demande générique de passage au
+meilleur modèle vise Opus 5.
+
+Concrètement, ça veut dire qu'un benchmark de type SWE ne discrimine pas les
+deux. Ces bancs mesurent des tâches courtes, bien spécifiées, à objectif
+unique, scorées automatiquement. C'est exactement le régime où Opus 5 a
+rattrapé. L'écart revendiqué de Fable 5 se joue ailleurs : des requêtes
+uniques qui tournent plusieurs dizaines de minutes, de la délégation à des
+sous-agents longue durée, la navigation dans l'ambiguïté.
+
+D'où une conclusion contre-intuitive si tu travailles avec un PRD : rédiger un
+bon PRD absorbe l'ambiguïté en amont. Or naviguer dans l'ambiguïté est
+précisément une des forces nommées de Fable 5. En structurant bien ton amont,
+tu retires une partie de son avantage avant même qu'il commence.
+
+Deux contraintes non fonctionnelles tranchent d'ailleurs souvent la question
+avant la performance. Les refus, d'abord : les modèles de dernière génération
+embarquent des garde-fous cybersécurité renforcés, et une requête peut être
+déclinée avec un statut de refus explicite plutôt qu'une erreur. Fable 5 cible
+largement le contenu cybersécurité, et la documentation reconnaît que du
+travail adjacent légitime, outillage de sécurité inclus, peut déclencher des
+faux positifs. Opus 5 a les mêmes garde-fous, en plus permissif. Sur du code
+d'authentification, de chiffrement ou de gestion de secrets, le modèle le plus
+capable n'est donc pas forcément celui qui acceptera de travailler. La
+latence, ensuite : un modèle dont les tours durent plusieurs minutes est
+excellent en run autonome et pénible en session interactive.
+
+## Ce que l'effort ne contrôle pas
+
+Trois pièges, où le réflexe est de toucher au curseur alors que le levier est
+ailleurs.
+
+**La verbosité.** Sur Opus 5, changer l'effort ne raccourcit pas de façon
+fiable la réponse visible. Ça déplace le volume de réflexion, pas la longueur
+de sortie. Si les réponses sont trop longues, le levier est le prompt, pas le
+réglage. Une instruction de concision courte suffit à réduire nettement la
+longueur des réponses.
+
+**Le périmètre.** Un modèle qui ajoute des étapes que tu n'as pas demandées ne
+le fait pas parce que l'effort est trop haut. Il le fait parce que rien ne lui
+dit où s'arrêter.
+
+**La vérification.** Sur les modèles récents, demander explicitement de
+vérifier son travail produit de la sur-vérification, parce qu'ils le font
+déjà. C'est une inversion d'une bonne pratique de prompting classique, et elle
+surprend : retirer l'instruction améliore le comportement sans régression de
+capacité.
+
+Un mot sur la délégation, parce que c'est l'erreur que j'ai moi-même faite
+longtemps. On lit souvent qu'un effort élevé « spawn des sous-agents pour
+élargir le périmètre ». La direction est juste, le mécanisme est plus
+indirect : l'effort contrôle la profondeur de réflexion et la dépense en
+tokens, et un effort bas produit des appels d'outils moins nombreux et plus
+consolidés. La délégation à des sous-agents relève du harnais et de la
+tendance du modèle, pas du curseur. Sur Opus 5
+c'est même à surveiller dans l'autre sens : il délègue volontiers, au point
+qu'un plafond explicite est utile.
+
+## Tes fichiers d'instructions sont du contexte
+
+C'est le point le plus sous-estimé, et le plus proche du sujet.
+
+Quand on parle de context engineering, on pense au prompt de la requête. Mais
+dans une session d'agent, ce qui atteint le modèle inclut aussi le fichier
+d'instructions global, les skills chargés, les descriptions d'outils. Ce
+corpus s'accumule sur des mois et, dans la plupart des cas, il n'est jamais
+audité, alors qu'il est rechargé à chaque appel.
+
+Le problème n'est pas sa taille. Le problème est qu'il contient des
+instructions écrites pour des modèles antérieurs, qui sont maintenant
+activement nuisibles. Trois familles reviennent tout le temps.
+
+La **pression inflationniste**. Les majuscules, les CRITICAL, les MUST, les
+« en cas de doute utilise cet outil » ont été ajoutés parce que les anciens
+modèles sous-déclenchaient. Les modèles actuels suivent le prompt système de
+très près, donc ces amplificateurs provoquent maintenant du sur-déclenchement.
+
+Les **échafaudages remplacés par une fonctionnalité**. Les « réfléchis étape
+par étape », les balises de scratchpad, les préremplissages de réponse pour
+forcer du JSON : tout ça est soit natif désormais, soit remplacé par une
+option d'API.
+
+La **sur-spécification**. Une procédure numérotée pour une tâche de jugement
+contraint l'exploration du modèle et dégrade la sortie. La documentation de
+migration le dit franchement : les prompts et skills écrits pour des modèles
+antérieurs sont souvent trop prescriptifs et réduisent la qualité de sortie.
+
+La ligne de partage est simple. Ce que seul l'auteur sait se garde :
+l'audience, l'environnement, le niveau d'exigence, les contraintes et surtout
+leurs raisons. Ce que le modèle sait déjà s'enlève : les vertus génériques,
+les rappels de comportements qu'il a par défaut, les contournements de défauts
+qui n'existent plus.
+
+Attention au piège inverse, qui est le plus dangereux quand on applique ça
+mécaniquement : le contexte n'est pas ce qu'on coupe. Un prompt trop court
+produit
+une sortie générique, parce que le modèle comble les trous avec des valeurs
+sûres.
+
+## Le pipeline, phase par phase
+
+Voici le routage que j'utilise aujourd'hui.
+
+<Table>
+  <thead>
+    <tr>
+      <th scope="col">Phase</th>
+      <th scope="col">Modèle</th>
+      <th scope="col">Effort</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Exploration, recherche, rédaction de PRD</th>
+      <td>Opus 5</td>
+      <td><code>xhigh</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Implémentation d'un epic substantiel, en autonomie</th>
+      <td>Fable 5</td>
+      <td><code>xhigh</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Implémentation d'un epic étroit</th>
+      <td>Opus 5</td>
+      <td><code>high</code>, tester <code>medium</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Revue et certification</th>
+      <td>Opus 5</td>
+      <td><code>high</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Modules authentification, chiffrement, secrets</th>
+      <td>Opus 5</td>
+      <td><code>xhigh</code></td>
+    </tr>
+  </tbody>
+</Table>
+
+Deux remarques sur ce tableau.
+
+La revue reste à `high` et pas plus haut, parce que la capacité de détection
+de bugs se maintient à effort réduit sur Opus 5. Ça rend praticable une passe
+rapide au moment de l'écriture, puis une passe approfondie plus tard. Monter
+l'effort ici n'achète pas grand-chose.
+
+L'audit de sécurité reste sur Opus 5 pour une raison précise : les gains de
+détection de bugs de Fable 5 sont documentés avec une exclusion explicite de
+l'analyse orientée sécurité, là où les classifieurs cyber s'appliquent.
+
+Je traite un epic par session, avec un contexte neuf à chaque fois. Les
+modèles récents perdent en cohérence long-horizon quand les contraintes
+arrivent progressivement : le même travail, donné en une fois ou étalé sur six
+échanges, ne produit pas le même résultat, à modèle et effort identiques.
+
+## À chaque sortie de modèle
+
+Ne juge pas un nouveau modèle sur ses benchmarks. Les bancs testent des cas
+isolés et bien spécifiés, et les fournisseurs optimisent pour ces scores,
+contre leur génération précédente et contre la concurrence. Une note en hausse
+ne dit rien de ton codebase, de tes outils et de ta façon de travailler.
+
+Fais ta propre veille. Lis les articles du fournisseur en entier plutôt que le
+tableau récapitulatif : les changements de comportement, les paramètres
+retirés et les réglages recommandés sont dans le texte. Bloque une journée
+pour ça à chaque sortie.
+
+Reprends ensuite ta configuration. Est-ce que tes skills suivent les nouvelles
+règles, est-ce que ton `.claude` ou ton `.codex` correspond aux directions
+annoncées, est-ce que les instructions que tu traînes servent encore.
+Comprends le modèle : son coût, sa manière de fonctionner, ce pour quoi il est
+fait.
+
+---
+
+Merci d'avoir lu l'article en entier. Pour ça, je t'offre ma configuration
+Claude : [github.com/arthjean/claude-config](https://github.com/arthjean/claude-config).
+
+Tu peux aussi télécharger tous les skills que j'utilise, dont certains que
+j'ai écrits moi-même :
+
+<CopyCommand command="bunx skills add arthjean/skills" />
+
+Le dépôt est ici : [github.com/arthjean/skills](https://github.com/arthjean/skills).
