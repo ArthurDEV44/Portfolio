@@ -227,14 +227,45 @@ function LegalBlock() {
   );
 }
 
-export function GridShell({ children }: { children: React.ReactNode }) {
+/* The default frame widens its outer margins as the viewport grows, which reads
+   well for a page of short blocks and starves a page that needs a measure plus
+   a rail. Long-form routes opt into a frame that spends the extra width on the
+   content column instead. */
+const frame = {
+  default: {
+    outer:
+      "h-dvh w-full overflow-hidden px-0 min-[1250px]:px-2 min-[1400px]:px-6 min-[1590px]:px-12",
+    inner:
+      "border-grid h-full border-dashed px-0 min-[1250px]:border-x min-[1250px]:px-4 min-[1400px]:px-12 min-[1550px]:px-36",
+    content:
+      "border-grid w-full max-w-lg border-dashed pt-28 min-[1250px]:border-x min-[1250px]:pt-40",
+  },
+  wide: {
+    outer:
+      "h-dvh w-full overflow-hidden px-0 min-[1250px]:px-2 min-[1400px]:px-4",
+    inner:
+      "border-grid h-full border-dashed px-0 min-[1250px]:border-x min-[1250px]:px-4 min-[1400px]:px-6",
+    content:
+      "border-grid w-full max-w-[1000px] border-dashed pt-28 min-[1250px]:border-x min-[1250px]:pt-40",
+  },
+} as const;
+
+export function GridShell({
+  children,
+  variant = "default",
+}: {
+  children: React.ReactNode;
+  variant?: keyof typeof frame;
+}) {
+  const { outer, inner, content } = frame[variant];
+
   return (
-    <div className="h-dvh w-full overflow-hidden px-0 min-[1250px]:px-2 min-[1400px]:px-6 min-[1590px]:px-12">
+    <div className={outer}>
       <MobileBar />
 
       {/* The vertical rules would sit flush against the screen edges once the
           rails collapse, so they only exist in the desktop regime. */}
-      <div className="border-grid h-full border-dashed px-0 min-[1250px]:border-x min-[1250px]:px-4 min-[1400px]:px-12 min-[1550px]:px-36">
+      <div className={inner}>
         <div className="border-grid flex h-full justify-between border-dashed min-[1250px]:border-x">
           <aside className="border-grid text-muted-foreground flex h-full w-80 flex-col border-r border-dashed pt-40 text-sm max-[1250px]:hidden">
             <BrandBlock />
@@ -245,7 +276,7 @@ export function GridShell({ children }: { children: React.ReactNode }) {
           </aside>
 
           <div className="scrollbar-hide flex h-full flex-1 scroll-pt-28 flex-col items-center overflow-y-auto overscroll-contain min-[1250px]:scroll-pt-0">
-            <div className="border-grid w-full max-w-lg border-dashed pt-28 min-[1250px]:border-x min-[1250px]:pt-40">
+            <div className={content}>
               {children}
 
               {/* Rails collapse below 1250px: their content moves into the flow. */}
