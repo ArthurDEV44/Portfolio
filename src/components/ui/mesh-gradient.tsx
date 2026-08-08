@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
 import { Gradient } from "@/lib/gradient";
 import { cn } from "@/lib/utils";
 

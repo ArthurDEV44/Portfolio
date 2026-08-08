@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+
 import { buildHomepageMarkdown, estimateTokens } from "@/lib/agent-markdown";
 
 function wantsMarkdown(accept: string): boolean {

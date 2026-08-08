@@ -3,6 +3,7 @@
 import { CalendarClock, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useId, useState } from "react";
+
 import { StrivexIcon } from "@/components/ui/brand-icons";
 import type { Experience, ExperienceRole } from "@/lib/site.config";
 import { experiences } from "@/lib/site.config";
@@ -10,7 +11,7 @@ import { experiences } from "@/lib/site.config";
 function CompanyMark({ logo }: { logo: Experience["logo"] }) {
   if (logo === "strivex") {
     return (
-      <StrivexIcon size={16} className="size-4 shrink-0 text-foreground" />
+      <StrivexIcon size={16} className="text-foreground size-4 shrink-0" />
     );
   }
 
@@ -34,13 +35,13 @@ function RoleItem({ role, isLast }: { role: ExperienceRole; isLast: boolean }) {
     <li className="relative flex items-start gap-2.5 pt-6">
       <span
         aria-hidden="true"
-        className={`absolute left-0 top-0 w-px bg-[color:var(--line)]/45 ${
+        className={`absolute top-0 left-0 w-px bg-[color:var(--line)]/45 ${
           isLast ? "h-8" : "bottom-0"
         }`}
       />
       <span
         aria-hidden="true"
-        className="absolute left-0 top-8 h-px w-4 bg-[color:var(--line)]/45"
+        className="absolute top-8 left-0 h-px w-4 bg-[color:var(--line)]/45"
       />
 
       <div className="ml-4 flex h-4 shrink-0 items-center">
@@ -57,7 +58,7 @@ function RoleItem({ role, isLast }: { role: ExperienceRole; isLast: boolean }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <h4 className="font-sans text-base font-normal leading-4 tracking-tight text-foreground">
+            <h4 className="text-foreground font-sans text-base leading-4 font-normal tracking-tight">
               {role.title}
             </h4>
           </div>
@@ -67,7 +68,7 @@ function RoleItem({ role, isLast }: { role: ExperienceRole; isLast: boolean }) {
             aria-controls={panelId}
             aria-label={`${expanded ? "Collapse" : "Expand"} ${role.title}`}
             onClick={() => setExpanded((open) => !open)}
-            className="inline-flex size-4 shrink-0 cursor-pointer items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground inline-flex size-4 shrink-0 cursor-pointer items-center justify-center transition-colors"
           >
             <ChevronDown
               aria-hidden="true"
@@ -80,7 +81,7 @@ function RoleItem({ role, isLast }: { role: ExperienceRole; isLast: boolean }) {
           </button>
         </div>
 
-        <p className="mt-2 text-sm font-light text-muted-foreground">
+        <p className="text-muted-foreground mt-2 text-sm font-light">
           {role.contract} <span className="text-[color:var(--line)]">|</span>{" "}
           {role.period} <span className="text-[color:var(--line)]">|</span>{" "}
           {role.duration}
@@ -99,11 +100,11 @@ function RoleItem({ role, isLast }: { role: ExperienceRole; isLast: boolean }) {
               {role.highlights.map((highlight) => (
                 <li
                   key={highlight}
-                  className="relative pl-4 text-sm font-light leading-relaxed text-foreground"
+                  className="text-foreground relative pl-4 text-sm leading-relaxed font-light"
                 >
                   <span
                     aria-hidden="true"
-                    className="absolute left-0 top-[0.55em] size-1 rounded-full bg-muted-foreground"
+                    className="bg-muted-foreground absolute top-[0.55em] left-0 size-1 rounded-full"
                   />
                   {highlight}
                 </li>
@@ -125,7 +126,7 @@ export function ExperienceSection() {
     >
       <h2
         id="experience-heading"
-        className="border-y border-dashed border-grid-soft p-4 font-serif text-3xl leading-normal text-foreground"
+        className="border-grid-soft text-foreground border-y border-dashed p-4 font-serif text-3xl leading-normal"
       >
         Experience
       </h2>
@@ -133,7 +134,7 @@ export function ExperienceSection() {
       {experiences.map((experience, index) => (
         <div
           key={experience.company}
-          className={`border-y border-dashed border-grid-soft p-4 ${
+          className={`border-grid-soft border-y border-dashed p-4 ${
             index === 0 ? "mt-6" : "mt-1"
           }`}
         >
@@ -143,10 +144,10 @@ export function ExperienceSection() {
                 <CompanyMark logo={experience.logo} />
               </div>
               <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-3">
-                <h3 className="font-sans text-base font-normal tracking-tight text-foreground">
+                <h3 className="text-foreground font-sans text-base font-normal tracking-tight">
                   {experience.company}
                 </h3>
-                <p className="inline-flex items-center gap-2 text-sm font-light text-muted-foreground">
+                <p className="text-muted-foreground inline-flex items-center gap-2 text-sm font-light">
                   {experience.location}
                 </p>
               </div>

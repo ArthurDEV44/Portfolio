@@ -1,5 +1,6 @@
 import { Mail } from "lucide-react";
 import Link from "next/link";
+
 import { GithubIcon, LinkedinIcon, XIcon } from "@/components/ui/brand-icons";
 import { GridModeToggle } from "@/components/ui/GridModeToggle";
 import { LocalTime } from "@/components/ui/LocalTime";
@@ -26,10 +27,10 @@ const legalLinks = [
 
 function BrandBlock() {
   return (
-    <div className="mb-10 w-full border-y border-dashed border-grid-soft px-4">
+    <div className="border-grid-soft mb-10 w-full border-y border-dashed px-4">
       <Link
         href="/"
-        className="inline-block border-x border-dashed border-grid-soft px-2 py-1 font-serif text-lg leading-[22px] text-foreground"
+        className="border-grid-soft text-foreground inline-block border-x border-dashed px-2 py-1 font-serif text-lg leading-[22px]"
       >
         {siteConfig.name}
       </Link>
@@ -44,7 +45,7 @@ function NavBlock() {
         <Link
           key={item.href}
           href={item.href}
-          className="border-y border-dashed border-grid-soft px-4 py-0.5 transition-colors hover:text-foreground"
+          className="border-grid-soft hover:text-foreground border-y border-dashed px-4 py-0.5 transition-colors"
         >
           {item.label}
         </Link>
@@ -56,13 +57,13 @@ function NavBlock() {
 function ContactBlock() {
   return (
     <div className="w-full">
-      <p className="mb-1 border-y border-dashed border-grid-soft px-4 py-1 font-light text-foreground">
+      <p className="border-grid-soft text-foreground mb-1 border-y border-dashed px-4 py-1 font-light">
         Drop me a message anytime
       </p>
 
       <a
         href={`mailto:${siteConfig.links.email}`}
-        className="flex w-full items-center gap-2 border-y border-dashed border-grid-soft px-4 py-1 text-foreground"
+        className="border-grid-soft text-foreground flex w-full items-center gap-2 border-y border-dashed px-4 py-1"
       >
         <Mail aria-hidden="true" size={16} strokeWidth={1.5} />
         <span className="underline-offset-4 hover:underline hover:decoration-[color:var(--line)]">
@@ -70,7 +71,7 @@ function ContactBlock() {
         </span>
       </a>
 
-      <div className="mt-6 flex w-full items-center justify-start gap-4 border-y border-dashed border-grid-soft px-4 min-[1250px]:mt-10 min-[1250px]:justify-between">
+      <div className="border-grid-soft mt-6 flex w-full items-center justify-start gap-4 border-y border-dashed px-4 min-[1250px]:mt-10 min-[1250px]:justify-between">
         {socialLinks.map(({ label, href, Icon, iconOnly }) => (
           <a
             key={href}
@@ -78,7 +79,7 @@ function ContactBlock() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={iconOnly ? label : undefined}
-            className="flex items-center gap-2 border-x border-dashed border-grid-soft py-1 underline-offset-4 transition-colors hover:text-foreground hover:underline hover:decoration-[color:var(--line)]"
+            className="border-grid-soft hover:text-foreground flex items-center gap-2 border-x border-dashed py-1 underline-offset-4 transition-colors hover:underline hover:decoration-[color:var(--line)]"
           >
             <Icon size={16} />
             {!iconOnly && label}
@@ -105,7 +106,7 @@ function FrenchFlag() {
       width={14}
       height={10}
       viewBox="0 0 3 2"
-      className="shrink-0 rounded-[1px] ring-1 ring-inset ring-[color:var(--line)]/60"
+      className="shrink-0 rounded-[1px] ring-1 ring-[color:var(--line)]/60 ring-inset"
     >
       <rect width="1" height="2" fill="#002395" />
       <rect x="1" width="1" height="2" fill="#ffffff" />
@@ -130,7 +131,7 @@ function StatusBlock() {
       )}
 
       <div className={statusRow}>
-        <span className={`${statusPill} gap-2 text-muted-foreground`}>
+        <span className={`${statusPill} text-muted-foreground gap-2`}>
           <FrenchFlag />
           {siteConfig.location}
           <LocalTime />
@@ -158,24 +159,24 @@ function StatusBlock() {
    a fixed bar so the viewport is not eaten by stacked status rows. */
 function MobileBar() {
   return (
-    <div className="fixed inset-x-0 top-0 z-50 border-b border-dashed border-grid-soft bg-[color:var(--background)]/70 backdrop-blur-xl backdrop-saturate-150 min-[1250px]:hidden">
+    <div className="border-grid-soft fixed inset-x-0 top-0 z-50 border-b border-dashed bg-[color:var(--background)]/70 backdrop-blur-xl backdrop-saturate-150 min-[1250px]:hidden">
       <div className="mx-auto flex w-full max-w-lg items-center justify-between gap-4 px-4 pt-[calc(0.625rem+env(safe-area-inset-top))] pb-2.5">
         <Link
           href="/"
-          className="shrink-0 font-serif text-base leading-none text-foreground"
+          className="text-foreground shrink-0 font-serif text-base leading-none"
         >
           {siteConfig.name}
         </Link>
 
         <nav
           aria-label="Primary navigation"
-          className="flex items-center gap-4 text-sm text-muted-foreground"
+          className="text-muted-foreground flex items-center gap-4 text-sm"
         >
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-foreground"
+              className="hover:text-foreground transition-colors"
             >
               {item.label}
             </Link>
@@ -192,9 +193,9 @@ function MobileBar() {
 function MobileStatusBlock() {
   return (
     <div className="mt-6 w-full">
-      <div className="mb-1 flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 border-y border-dashed border-grid-soft px-4 py-1">
+      <div className="border-grid-soft mb-1 flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 border-y border-dashed px-4 py-1">
         {siteConfig.available && (
-          <span className="inline-flex items-center gap-2 text-foreground">
+          <span className="text-foreground inline-flex items-center gap-2">
             Open to work
             <span
               aria-hidden="true"
@@ -203,14 +204,14 @@ function MobileStatusBlock() {
           </span>
         )}
 
-        <span className="inline-flex items-center gap-2 text-muted-foreground">
+        <span className="text-muted-foreground inline-flex items-center gap-2">
           <FrenchFlag />
           {siteConfig.location}
           <LocalTime />
         </span>
       </div>
 
-      <div className="flex w-full items-center justify-between border-y border-dashed border-grid-soft px-4 py-1 text-muted-foreground">
+      <div className="border-grid-soft text-muted-foreground flex w-full items-center justify-between border-y border-dashed px-4 py-1">
         Grid Mode
         <GridModeToggle />
       </div>
@@ -225,7 +226,7 @@ function LegalBlock() {
         <Link
           key={link.href}
           href={link.href}
-          className="border-r border-dashed border-grid-soft py-1 pr-2 font-mono text-[11px] text-[color:var(--fg-faint)] transition-colors hover:text-foreground"
+          className="border-grid-soft hover:text-foreground border-r border-dashed py-1 pr-2 font-mono text-[11px] text-[color:var(--fg-faint)] transition-colors"
         >
           {link.label}
         </Link>
@@ -241,9 +242,9 @@ export function GridShell({ children }: { children: React.ReactNode }) {
 
       {/* The vertical rules would sit flush against the screen edges once the
           rails collapse, so they only exist in the desktop regime. */}
-      <div className="h-full border-dashed border-grid px-0 min-[1250px]:border-x min-[1250px]:px-4 min-[1400px]:px-12 min-[1550px]:px-36">
-        <div className="flex h-full justify-between border-dashed border-grid min-[1250px]:border-x">
-          <aside className="flex h-full w-80 flex-col border-r border-dashed border-grid pt-40 text-sm text-muted-foreground max-[1250px]:hidden">
+      <div className="border-grid h-full border-dashed px-0 min-[1250px]:border-x min-[1250px]:px-4 min-[1400px]:px-12 min-[1550px]:px-36">
+        <div className="border-grid flex h-full justify-between border-dashed min-[1250px]:border-x">
+          <aside className="border-grid text-muted-foreground flex h-full w-80 flex-col border-r border-dashed pt-40 text-sm max-[1250px]:hidden">
             <BrandBlock />
             <NavBlock />
             <div className="mt-auto mb-4 w-full">
@@ -251,12 +252,12 @@ export function GridShell({ children }: { children: React.ReactNode }) {
             </div>
           </aside>
 
-          <div className="flex h-full flex-1 flex-col items-center overflow-y-auto overscroll-contain scroll-pt-28 scrollbar-hide min-[1250px]:scroll-pt-0">
-            <div className="w-full max-w-lg border-dashed border-grid pt-28 min-[1250px]:border-x min-[1250px]:pt-40">
+          <div className="scrollbar-hide flex h-full flex-1 scroll-pt-28 flex-col items-center overflow-y-auto overscroll-contain min-[1250px]:scroll-pt-0">
+            <div className="border-grid w-full max-w-lg border-dashed pt-28 min-[1250px]:border-x min-[1250px]:pt-40">
               {children}
 
               {/* Rails collapse below 1250px: their content moves into the flow. */}
-              <div className="flex flex-col pb-[calc(2.5rem+env(safe-area-inset-bottom))] text-sm text-muted-foreground min-[1250px]:hidden">
+              <div className="text-muted-foreground flex flex-col pb-[calc(2.5rem+env(safe-area-inset-bottom))] text-sm min-[1250px]:hidden">
                 <MobileStatusBlock />
                 <div className="mt-6">
                   <ContactBlock />
@@ -266,7 +267,7 @@ export function GridShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          <aside className="flex h-full w-80 flex-col items-end border-l border-dashed border-grid pt-40 text-sm text-muted-foreground max-[1250px]:hidden">
+          <aside className="border-grid text-muted-foreground flex h-full w-80 flex-col items-end border-l border-dashed pt-40 text-sm max-[1250px]:hidden">
             <StatusBlock />
             <div className="mt-auto mb-4 w-full">
               <LegalBlock />

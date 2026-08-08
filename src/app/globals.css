@@ -187,7 +187,11 @@
     background: var(--bg);
     color: var(--fg);
     font-family:
-      var(--font-geist-sans), "Geist", system-ui, -apple-system, sans-serif;
+      var(--font-geist-sans),
+      "Geist",
+      system-ui,
+      -apple-system,
+      sans-serif;
     font-feature-settings: "cv11", "ss01", "ss03";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;

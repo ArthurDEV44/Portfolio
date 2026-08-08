@@ -6,7 +6,7 @@ export function BiographySection() {
     <section id="about" className="pt-20" aria-labelledby="about-heading">
       <h2
         id="about-heading"
-        className="border-y border-dashed border-grid-soft p-4 font-serif text-3xl leading-normal text-foreground"
+        className="border-grid-soft text-foreground border-y border-dashed p-4 font-serif text-3xl leading-normal"
       >
         About
       </h2>

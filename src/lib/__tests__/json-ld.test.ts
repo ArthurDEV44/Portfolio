@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { getJsonLd } from "@/lib/json-ld";
 import { projects, siteConfig } from "@/lib/site.config";
 

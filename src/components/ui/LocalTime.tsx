@@ -19,7 +19,7 @@ export function LocalTime() {
   }, []);
 
   return (
-    <time className="inline-block pl-1 text-xs tabular-nums text-[color:var(--fg-faint)]">
+    <time className="inline-block pl-1 text-xs text-[color:var(--fg-faint)] tabular-nums">
       {time ? `${time} CET` : " "}
     </time>
   );

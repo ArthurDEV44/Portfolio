@@ -55,12 +55,12 @@ export function GlassCard({
     >
       {/* Glow line */}
       {glowLine && (
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-foreground/30 to-transparent" />
+        <div className="via-foreground/30 absolute top-0 left-1/2 h-px w-3/4 -translate-x-1/2 bg-gradient-to-r from-transparent to-transparent" />
       )}
 
       {/* Rim light (top highlight) */}
       {variant === "card" && (
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/16 to-transparent rounded-t-2xl" />
+        <div className="via-foreground/16 absolute inset-x-0 top-0 h-px rounded-t-2xl bg-gradient-to-r from-transparent to-transparent" />
       )}
 
       {children}

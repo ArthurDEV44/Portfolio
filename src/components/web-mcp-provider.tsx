@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+
 import { aiSkills, mainStack, projects, siteConfig } from "@/lib/site.config";
 
 type WebMcpTool = {

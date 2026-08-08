@@ -3,7 +3,9 @@ import { GeistPixelCircle, GeistPixelGrid } from "geist/font/pixel";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata, Viewport } from "next";
 import { Hanken_Grotesk, Instrument_Serif, Petemoss } from "next/font/google";
+
 import { siteConfig } from "@/lib/site.config";
+
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -67,7 +69,7 @@ export default function RootLayout({
       <head>
         {/* Prevent flash of wrong theme */}
         <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: inline script for theme flash prevention
+          // oxlint-disable-next-line react/no-danger -- inline script for theme flash prevention
           dangerouslySetInnerHTML={{
             __html: `try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');document.documentElement.dataset.grid=localStorage.getItem('grid-mode')==='off'?'off':'on'}catch(e){}`,
           }}
@@ -81,7 +83,7 @@ export default function RootLayout({
       >
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+          className="focus:bg-primary focus:text-primary-foreground focus:ring-ring sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-md focus:px-4 focus:py-2 focus:ring-2 focus:outline-none"
         >
           Skip to main content
         </a>

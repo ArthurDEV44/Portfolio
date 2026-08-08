@@ -228,7 +228,7 @@ class Material {
       console.error(this.gl.getProgramInfoLog(this.program));
     }
 
-    // biome-ignore lint/correctness/useHookAtTopLevel: useProgram is a WebGL method, not a React hook
+    // useProgram is a WebGL method, not a React hook
     this.gl.useProgram(this.program);
     this.attachUniforms(undefined, minigl.commonUniforms);
     this.attachUniforms(undefined, uniforms);
@@ -473,7 +473,7 @@ class Mesh {
 
   draw(): void {
     const gl = this.minigl.gl;
-    // biome-ignore lint/correctness/useHookAtTopLevel: WebGL API call, not a React hook
+    // WebGL API call, not a React hook
     gl.useProgram(this.material.program);
 
     for (const { uniform, location } of this.material.uniformInstances) {

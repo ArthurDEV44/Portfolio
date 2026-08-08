@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+
 import { projects } from "@/lib/site.config";
 
 export function ProjectsSection() {
@@ -6,7 +7,7 @@ export function ProjectsSection() {
     <section id="projects" className="pt-20" aria-labelledby="projects-heading">
       <h2
         id="projects-heading"
-        className="border-y border-dashed border-grid-soft p-4 font-serif text-3xl leading-normal text-foreground"
+        className="border-grid-soft text-foreground border-y border-dashed p-4 font-serif text-3xl leading-normal"
       >
         Things I&apos;ve built
       </h2>
@@ -16,7 +17,7 @@ export function ProjectsSection() {
           const content = (
             <>
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="inline-flex items-center gap-1.5 font-sans text-base font-normal tracking-tight text-foreground">
+                <h3 className="text-foreground inline-flex items-center gap-1.5 font-sans text-base font-normal tracking-tight">
                   {project.rainbow ? (
                     <span className="rainbow-text">{project.title}</span>
                   ) : (
@@ -31,12 +32,12 @@ export function ProjectsSection() {
                     />
                   )}
                 </h3>
-                <p className="text-sm font-light text-muted-foreground">
+                <p className="text-muted-foreground text-sm font-light">
                   {project.meta}
                 </p>
               </div>
 
-              <p className="mt-2 font-sans text-sm font-light leading-relaxed tracking-tight text-muted-foreground">
+              <p className="text-muted-foreground mt-2 font-sans text-sm leading-relaxed font-light tracking-tight">
                 {project.description}
               </p>
 
@@ -44,7 +45,7 @@ export function ProjectsSection() {
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface-elevated)]/50 px-2.5 py-1 text-xs font-light text-muted-foreground"
+                    className="text-muted-foreground inline-flex items-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface-elevated)]/50 px-2.5 py-1 text-xs font-light"
                   >
                     {tag}
                   </span>
@@ -56,7 +57,7 @@ export function ProjectsSection() {
           return (
             <li
               key={project.title}
-              className={`border-y border-dashed border-grid-soft ${
+              className={`border-grid-soft border-y border-dashed ${
                 index === 0 ? "mt-6" : "mt-1"
               }`}
             >

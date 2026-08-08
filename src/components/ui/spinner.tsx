@@ -1,5 +1,6 @@
 import { Loader2Icon } from "lucide-react";
 import type React from "react";
+
 import { cn } from "@/lib/utils";
 
 export function Spinner({
@@ -10,6 +11,7 @@ export function Spinner({
     <Loader2Icon
       aria-label="Loading"
       className={cn("animate-spin", className)}
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- `output` is not a valid substitute for an SVG icon
       role="status"
       {...props}
     />

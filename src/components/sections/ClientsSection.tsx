@@ -1,17 +1,18 @@
 import { ArrowUpRight } from "lucide-react";
+
 import { clients } from "@/lib/site.config";
 
 export function ClientsSection() {
   return (
     <section id="clients" className="pt-20" aria-labelledby="clients-heading">
-      <div className="flex flex-wrap items-baseline justify-between gap-3 border-y border-dashed border-grid-soft p-4">
+      <div className="border-grid-soft flex flex-wrap items-baseline justify-between gap-3 border-y border-dashed p-4">
         <h2
           id="clients-heading"
-          className="font-serif text-3xl leading-normal text-foreground"
+          className="text-foreground font-serif text-3xl leading-normal"
         >
-          Client <span className="italic text-muted-foreground">work</span>.
+          Client <span className="text-muted-foreground italic">work</span>.
         </h2>
-        <p className="text-sm font-light text-muted-foreground">
+        <p className="text-muted-foreground text-sm font-light">
           {String(clients.length).padStart(2, "0")} sites
         </p>
       </div>
@@ -21,7 +22,7 @@ export function ClientsSection() {
           const content = (
             <>
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="inline-flex items-center gap-1.5 font-sans text-base font-normal tracking-tight text-foreground">
+                <h3 className="text-foreground inline-flex items-center gap-1.5 font-sans text-base font-normal tracking-tight">
                   {client.title}
                   {client.url && (
                     <ArrowUpRight
@@ -32,12 +33,12 @@ export function ClientsSection() {
                     />
                   )}
                 </h3>
-                <p className="text-sm font-light text-muted-foreground">
+                <p className="text-muted-foreground text-sm font-light">
                   {client.year}
                 </p>
               </div>
 
-              <p className="mt-2 font-sans text-sm font-light leading-relaxed tracking-tight text-muted-foreground">
+              <p className="text-muted-foreground mt-2 font-sans text-sm leading-relaxed font-light tracking-tight">
                 {client.description}
               </p>
             </>
@@ -46,7 +47,7 @@ export function ClientsSection() {
           return (
             <li
               key={client.title}
-              className={`border-y border-dashed border-grid-soft ${
+              className={`border-grid-soft border-y border-dashed ${
                 index === 0 ? "mt-6" : "mt-1"
               }`}
             >
