@@ -2,6 +2,7 @@ import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
+import { CopyCommand } from "@/components/ui/CopyCommand";
 import { slugify, type TocEntry } from "@/lib/blog";
 import { extractCodeBlock, highlightCode } from "@/lib/shiki";
 import { siteConfig } from "@/lib/site.config";
@@ -137,6 +138,7 @@ function buildComponents(toc?: TocEntry[]): MDXComponents {
     a: Anchor,
     pre: CodeFence,
     Table,
+    CopyCommand,
   };
 }
 
