@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { formatPostDate, getPublishedPosts } from "@/lib/blog";
+import { GridShell } from "@/components";
+import { formatPostDate, getPublishedPosts, type Post } from "@/lib/blog";
 import { siteConfig } from "@/lib/site.config";
 
 const title = "Blog";
@@ -18,6 +19,16 @@ export const metadata: Metadata = {
 export default async function BlogIndexPage() {
   const posts = await getPublishedPosts();
 
+  return (
+    <GridShell>
+      <main id="main-content" tabIndex={-1} className="outline-none">
+        <BlogIndex posts={posts} />
+      </main>
+    </GridShell>
+  );
+}
+
+function BlogIndex({ posts }: { posts: Post[] }) {
   return (
     <section aria-labelledby="blog-heading" className="pt-4">
       <h1
