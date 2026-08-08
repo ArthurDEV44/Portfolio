@@ -266,7 +266,11 @@ export function GridShell({
       {/* The vertical rules would sit flush against the screen edges once the
           rails collapse, so they only exist in the desktop regime. */}
       <div className={inner}>
-        <div className="border-grid flex h-full justify-between border-dashed min-[1250px]:border-x">
+        {/* One rail late: between 1250px and 1400px the frame's own padding is
+            only 16px, so this rule and the one on the frame read as a single
+            thick dashed line. It comes back once the padding is wide enough to
+            separate them. */}
+        <div className="border-grid flex h-full justify-between border-dashed min-[1400px]:border-x">
           <aside className="border-grid text-muted-foreground flex h-full w-80 flex-col border-r border-dashed pt-40 text-sm max-[1250px]:hidden">
             <BrandBlock />
             <NavBlock />
