@@ -3,7 +3,7 @@
     "file": "tasks/prd-blog-mdx.md",
     "title": "Blog MDX du portfolio",
     "created_at": "2026-08-08",
-    "status": "IN_PROGRESS"
+    "status": "DONE"
   },
   "epics": [
     {
@@ -26,10 +26,10 @@
     {
       "id": "EP-003",
       "title": "Diffusion et découvrabilité",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P1",
       "stories_total": 5,
-      "stories_done": 0
+      "stories_done": 5
     }
   ],
   "stories": [
@@ -173,61 +173,66 @@
       "id": "US-012",
       "title": "Flux RSS 2.0",
       "epic": "EP-003",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P1",
       "size": "M",
       "blocked_by": ["US-001"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08",
+      "note": "The W3C Feed Validator is drivable after all, through its SOAP endpoint rather than the HTML form: `POST https://validator.w3.org/feed/check.cgi` with `rawdata` and `output=soap12`. Three feeds validated at `validity=true, errorcount=0`: the built feed, an empty feed, and a synthetic feed carrying all five reserved characters in both title and description. The only warnings are artifacts of raw-data submission and of the synthetic input (`SelfDoesntMatchLocation` because a pasted feed has no location, `ImplausibleDate` on a deliberately future test date, `CharacterData` and `NotHtml` advisories on hostile strings). Both `/rss.xml` and `/llms.txt` needed an explicit `dynamic = \"force-static\"`: an async route handler reading the content directory is otherwise left server-rendered on demand, which C7 forbids."
     },
     {
       "id": "US-013",
       "title": "Image OG par article",
       "epic": "EP-003",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P1",
       "size": "L",
       "blocked_by": ["US-003"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08",
+      "note": "The `alt` export cannot vary per post without `generateImageMetadata`, and using it moves the route to `[__metadata_id__]`, which the build leaves dynamic instead of prerendering. Re-verified during review by reapplying `generateImageMetadata` on 16.2.9: the route becomes `/blog/[slug]/opengraph-image/[__metadata_id__]` and the build lists no concrete image path under it, so nothing is prerendered at all. Build-time generation is the harder constraint, so the file exports a constant `alt` and the per-article alt is declared with the image in the page's `generateMetadata`, which also pins `og:image` and `twitter:image` to the prerendered route; the built HTML carries `og:image:alt=\"Notes, not posts — Arthur Jean\"`. Review added `dynamicParams = false`: without it the route answered any slug at request time, serving `/blog/_kitchen-sink/opengraph-image` as a 200 PNG bearing the draft's title while the page itself 404s, and turning an unbounded URL space into Satori renders. Arthur chose Instrument Serif over Geist for the title, closing the PRD open question; review added the missing Geist OFL notice beside the redistributed `.ttf`. Truncation, accented glyphs and frame containment re-verified on real renders at 116, 68 and 16 characters."
     },
     {
       "id": "US-014",
       "title": "Extension du sitemap",
       "epic": "EP-003",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P1",
       "size": "S",
       "blocked_by": ["US-001", "US-004"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08",
+      "note": "The empty-registry case is carried by code shape rather than a test: `posts[0]?.meta.publishedAt ?? siteConfig.lastModified` for the index entry, and a spread of an empty map for the articles. Worth a vitest case if the sitemap ever grows a second rule."
     },
     {
       "id": "US-015",
       "title": "JSON-LD BlogPosting",
       "epic": "EP-003",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P1",
       "size": "M",
       "blocked_by": ["US-003"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08",
+      "note": "The graph ships the canonical `Person` node alongside the `BlogPosting` so the `@id` in `author` and `publisher` resolves on the page itself rather than pointing at an entity the validator would have to fetch from the homepage. Validated during review by pasting the JSON-LD emitted at `.next/server/app/blog/notes-not-posts.html` into the Google Rich Results Test: 1 valid Articles item, zero errors. Three optional notices remain, all reported rather than fixed because the story's criteria enumerate the required fields and none of them is affected: missing `image`, and two on `datePublished` being a bare calendar date without a time or a time zone. Wiring `image` to the prerendered `/blog/<slug>/opengraph-image` and emitting `datePublished` as `<date>T00:00:00+00:00` would clear all three; both are Arthur's call."
     },
     {
       "id": "US-016",
       "title": "Articles dans llms.txt",
       "epic": "EP-003",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P2",
       "size": "S",
       "blocked_by": ["US-001"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08",
+      "note": "`buildHomepageMarkdown` defaults its posts argument to an empty list, so the second caller, `src/proxy.ts`, still serves the homepage markdown without an Articles section to an agent sending `Accept: text/markdown`. That is deliberate: the proxy runs at the edge and cannot read `node:fs`, and the PRD freezes `src/proxy.ts`. The two agent-facing surfaces therefore carry different inventories, which is worth revisiting if the proxy ever gains a build-time post list."
     }
   ]
 }
