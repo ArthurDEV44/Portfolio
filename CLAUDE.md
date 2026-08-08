@@ -8,8 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 bun dev        # Serveur de développement (http://localhost:3000)
 bun build      # Build de production
 bun start      # Serveur de production
-bun lint       # Vérification avec Biome (linting)
-bun format     # Formatage du code avec Biome
+bun lint       # oxlint + vérification du formatage (oxfmt --check)
+bun format     # Formatage du code avec oxfmt
 ```
 
 ## Stack technique
@@ -18,7 +18,8 @@ bun format     # Formatage du code avec Biome
 - **Styling**: TailwindCSS 4 avec tw-animate-css
 - **UI**: Base UI Components, Lucide React (icônes)
 - **Utilitaires**: clsx + tailwind-merge (fonction `cn` dans `src/lib/utils.ts`)
-- **Linter/Formatter**: Biome (remplace ESLint + Prettier)
+- **Linter**: oxlint (`.oxlintrc.json`)
+- **Formatter**: oxfmt (`.oxfmtrc.json`), tri des imports et des classes Tailwind inclus
 - **Package Manager**: bun
 
 ## Architecture
@@ -43,11 +44,14 @@ L'alias `@/*` pointe vers `./src/*`. Tous les composants de sections sont export
 
 Les animations au scroll utilisent `useIntersectionObserver` avec la classe CSS `.animate-on-scroll`. Les styles d'animation sont définis dans `src/app/globals.css`.
 
-## Conventions Biome
+## Conventions Oxc
 
-- Indentation: 2 espaces
-- Organisation automatique des imports activée
-- Règles recommandées pour React et Next.js
+- Indentation: 2 espaces, `printWidth` 80
+- Tri automatique des imports, des classes Tailwind et des champs de `package.json` (oxfmt)
+- Plugins oxlint activés: `eslint`, `typescript`, `oxc`, `import`, `react`, `nextjs`, `jsx-a11y`, `vitest`
+- Catégories: `correctness` et `suspicious` en erreur, `perf` en avertissement
+- Suppression locale: `// oxlint-disable-next-line <rule> -- raison`
+- Markdown et MDX ne sont pas formatés (exclus dans `.oxfmtrc.json`)
 
 ## Anti-Friction Rules (claude-doctor)
 

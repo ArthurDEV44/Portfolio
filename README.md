@@ -8,7 +8,8 @@ Portfolio personnel d'Arthur Jean, développeur Full Stack & Architecte IA spéc
 - **Styling**: TailwindCSS 4 avec tw-animate-css
 - **UI**: Base UI Components, Lucide React (icônes)
 - **Animations**: motion/react (tree-shakeable)
-- **Linter/Formatter**: Biome (remplace ESLint + Prettier)
+- **Linter**: oxlint (Oxc)
+- **Formatter**: oxfmt (Oxc), tri des imports et classes Tailwind inclus
 - **Tests**: Vitest
 - **CI**: GitHub Actions
 - **Package Manager**: bun
@@ -51,7 +52,8 @@ portfolio/
 │       └── utils.ts                # Utilitaires (cn)
 ├── suppress-baseline-warning.cjs   # Supprime le warning [baseline-browser-mapping] de Next.js pendant le build
 ├── vitest.config.ts                # Configuration Vitest
-├── biome.json                      # Configuration Biome (linter/formatter)
+├── .oxlintrc.json                  # Configuration oxlint
+├── .oxfmtrc.json                   # Configuration oxfmt
 └── .github/workflows/ci.yml       # Pipeline CI (typecheck, lint, test, build)
 ```
 
@@ -75,9 +77,9 @@ bun start
 
 ```bash
 bun typecheck  # Vérification des types TypeScript
-bun lint       # Vérification avec Biome (linting + formatting)
+bun lint       # oxlint + vérification du formatage (oxfmt --check)
 bun test       # Tests unitaires avec Vitest
-bun format     # Formatage du code avec Biome
+bun format     # Formatage du code avec oxfmt
 ```
 
 ## 🎯 Fonctionnalités
