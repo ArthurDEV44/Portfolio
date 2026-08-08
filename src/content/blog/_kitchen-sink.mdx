@@ -1,0 +1,295 @@
+export const meta = {
+  title: "Kitchen sink: every primitive the article layout has to survive",
+  description:
+    "A permanent draft that exercises every overridden MDX primitive at once, so a layout regression shows up on one page instead of hiding until the next real post.",
+  publishedAt: "2026-08-01",
+  updatedAt: "2026-08-08",
+  tags: ["fixture"],
+  draft: true,
+};
+
+This file is not a post. It is the fixture the article layout gets checked
+against, and it never leaves draft, so it never reaches the index, the sitemap,
+the feed, or a production route. Its only job is to put every primitive the
+layout claims to handle on a single page, in both themes, with grid mode on and
+off, at four viewport widths and at two hundred percent browser zoom. If any of
+those combinations breaks, it breaks here first, before a real post inherits the
+bug.
+
+The reason a fixture beats a checklist is that a checklist gets read once and
+then trusted forever. A page renders every time it is opened. When the spacing
+scale drifts, when a token stops resolving, when a heading anchor no longer
+matches the link that points at it, the failure is visible rather than
+remembered. That is the whole argument for keeping a file like this in the
+repository instead of a document describing what should have been tested.
+
+## Why the measure comes first
+
+Reading is a mechanical act before it is an intellectual one. The eye tracks a
+line to its end, then makes a return sweep to the start of the next one, and the
+accuracy of that sweep collapses once the line runs long. Somewhere past seventy
+five characters the reader starts landing on the wrong line, rereading, and
+losing the thread of the sentence they were already halfway through. The cost
+does not announce itself as difficulty. It shows up as fatigue, and then as
+leaving.
+
+So the column is bounded at six hundred and ten pixels, which lands between
+sixty and seventy five characters at the body size used here. That number is not
+invented for the blog. It is the same bound the legal pages already use, which
+means the site has one measure rather than two, and a reader who moves from an
+article to a terms page does not feel the text reflow underneath them.
+
+The vertical rhythm follows from the same place. Body text sits at sixteen
+pixels with a line height of one point six two five, and sixteen times one point
+six two five is twenty six. Every block level gap in this layout is a multiple
+of twenty six pixels: a paragraph is followed by one unit, a subsection heading
+by two, a section heading by three. The result is that no matter which blocks
+happen to sit next to each other, their baselines stay on the same ladder. A
+paragraph after a list, a heading after a code block, a quotation between two
+paragraphs: the spacing is never a special case, because there are no special
+cases, only multiples.
+
+### What weight does
+
+The legal pages set their body text in weight three hundred and color it with
+the muted foreground token. That is correct for text nobody wants to read: it
+recedes, it stays available, and it does not compete with the page around it. An
+article is the opposite situation. The text is the reason the page exists, so it
+runs at weight four hundred in the full foreground token, and the muted token is
+reserved for the things around the text rather than the text itself: the
+description under the title, the date, the reading time.
+
+That distinction is why the article styles are a separate block rather than a
+variant of the legal ones. Two long form systems in one stylesheet would be a
+maintenance trap. One long form system with a switch that flips ink weight and
+color would be worse, because every future change would have to be reasoned
+about twice.
+
+## What the overrides actually do
+
+Standard Markdown produces standard elements, and the overrides give those
+elements the design system without asking the author to remember anything.
+Writing a post means writing text. No component imports, no wrapper elements, no
+class names in the prose.
+
+Headings get an anchor identifier derived from their own text, produced by the
+same function that builds the table of contents. That is the entire reason the
+project does not use a slug plugin. Two identifier generators would eventually
+disagree, and the way that failure presents itself is a table of contents whose
+links quietly stop working, which nobody notices because nobody clicks their own
+table of contents.
+
+Links are split by destination. An internal link, such as the one back to the
+[blog index](/blog), renders through the router and carries no target
+attribute. An external link, such as the
+[Next.js documentation](https://nextjs.org/docs), opens in a new tab and carries
+the relationship attributes that keep the opened page from reaching back into
+this one. The author writes ordinary Markdown link syntax in both cases and gets
+the right behavior without thinking about it.
+
+Inline code such as `readingTimeMinutes` gets a monospace face, a hairline
+border, and the surface token behind it, sized slightly below the surrounding
+text so it does not tower over the line it sits in. Emphasis works the way it
+should: **bold text** carries a heavier weight and the full foreground color,
+while *italic text* leans without changing color or weight at all.
+
+> A quotation sits inside a solid rule on its left edge rather than a dashed
+> one. The dashed rules belong to grid mode, and grid mode is something the
+> reader can switch off. Anything that carries structural meaning has to survive
+> that switch, so the quotation marker is drawn from the line token instead.
+
+Lists come in both varieties. An unordered list:
+
+- Every item sits on the same twenty six pixel ladder as the paragraphs around
+  it, which is why a list wedged between two paragraphs does not visibly break
+  the rhythm of the page.
+- Markers use the faint foreground token, one step back from the text, so the
+  list reads as text with structure rather than as a bulleted diagram.
+- Long items wrap inside the measure like any other block, without a separate
+  width rule of their own.
+
+And an ordered one:
+
+1. Numbers use the same marker token as bullets, for the same reason.
+2. The indentation is identical between the two kinds of list, so switching a
+   list from ordered to unordered does not shift the text sideways.
+3. Nothing about the list depends on grid mode being on.
+
+---
+
+The horizontal rule above is a real section break rather than decoration. It
+carries three rhythm units above and below, and it draws from the line token, so
+it stays visible when the dashed grid is switched off.
+
+## Code blocks and the zero JavaScript rule
+
+Syntax highlighting happens once, at build time, inside a server component. The
+reader downloads colored markup and nothing else: no highlighter, no grammar
+files, no theme payload, no hydration step whose only job is to repaint text
+that was already correct when it arrived.
+
+```typescript
+export async function highlightCode(
+  code: string,
+  lang: string | null | undefined,
+): Promise<string> {
+  const highlighter = await getHighlighter();
+
+  return highlighter.codeToHtml(code, {
+    lang: resolveLanguage(lang),
+    themes: { light: SHIKI_LIGHT_THEME, dark: SHIKI_DARK_THEME },
+    defaultColor: false,
+  });
+}
+```
+
+Both themes ship in the same markup. Every token carries its light color and its
+dark color as custom properties, and the theme switch is a CSS selector rather
+than a re-render, which is why flipping the theme toggle recolors code
+instantly and without a flash.
+
+A second language, to prove the loaded set is really more than one grammar, and
+a line long enough that the block has to scroll inside its own frame while the
+page behind it stays exactly where it was:
+
+```rust
+pub fn resolve(theme: &Theme, token: &Token, fallback: &Color) -> Color { theme.lookup(token.scope()).or_else(|| theme.lookup(token.parent_scope())).unwrap_or_else(|| fallback.clone()) }
+```
+
+A third, in a shell, because installation snippets are the most copied blocks on
+any technical site and they deserve to be legible:
+
+```bash
+bun add shiki
+bun run build
+```
+
+And a fenced block with no language at all, which has to render as plain text
+without failing the build:
+
+```
+no language declared here, and none inferred
+```
+
+## Tables and other things wider than the column
+
+Tables are written as HTML rather than pipe syntax, because the pipe syntax
+would mean a remark plugin, a second production dependency, and an edit to a
+configuration file the project decided not to touch. A table wider than the
+measure scrolls inside the container `<Table>` supplies, which is reachable from
+the keyboard and leaves the table itself an ordinary table, so no row or cell
+loses its meaning and the page behind it never moves sideways. The capital is
+the whole trick: a lowercase tag written by hand compiles to a literal element
+and never reaches the overrides at all. This one is deliberately too wide for
+six hundred and ten pixels:
+
+<Table>
+  <thead>
+    <tr>
+      <th scope="col">Primitive</th>
+      <th scope="col">Element</th>
+      <th scope="col">Spacing above</th>
+      <th scope="col">Spacing below</th>
+      <th scope="col">Survives grid off</th>
+      <th scope="col">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Paragraph</th>
+      <td><code>p</code></td>
+      <td>0</td>
+      <td>26px</td>
+      <td>yes</td>
+      <td>The baseline unit for everything else</td>
+    </tr>
+    <tr>
+      <th scope="row">Section heading</th>
+      <td><code>h2</code></td>
+      <td>78px</td>
+      <td>26px</td>
+      <td>yes</td>
+      <td>Hierarchy carried by size and space</td>
+    </tr>
+    <tr>
+      <th scope="row">Subsection heading</th>
+      <td><code>h3</code></td>
+      <td>52px</td>
+      <td>26px</td>
+      <td>yes</td>
+      <td>One step down in size and space</td>
+    </tr>
+    <tr>
+      <th scope="row">Unordered list</th>
+      <td><code>ul</code></td>
+      <td>0</td>
+      <td>26px</td>
+      <td>yes</td>
+      <td>Markers use the faint token</td>
+    </tr>
+    <tr>
+      <th scope="row">Ordered list</th>
+      <td><code>ol</code></td>
+      <td>0</td>
+      <td>26px</td>
+      <td>yes</td>
+      <td>Same indentation as unordered</td>
+    </tr>
+    <tr>
+      <th scope="row">Quotation</th>
+      <td><code>blockquote</code></td>
+      <td>52px</td>
+      <td>52px</td>
+      <td>yes</td>
+      <td>Solid left rule, not a dashed one</td>
+    </tr>
+    <tr>
+      <th scope="row">Code block</th>
+      <td><code>pre</code></td>
+      <td>52px</td>
+      <td>52px</td>
+      <td>yes</td>
+      <td>Surface background, square corners</td>
+    </tr>
+    <tr>
+      <th scope="row">Rule</th>
+      <td><code>hr</code></td>
+      <td>78px</td>
+      <td>78px</td>
+      <td>yes</td>
+      <td>Drawn from the line token</td>
+    </tr>
+    <tr>
+      <th scope="row">Table</th>
+      <td><code>table</code></td>
+      <td>52px</td>
+      <td>52px</td>
+      <td>yes</td>
+      <td>Scrolls on its own, page stays put</td>
+    </tr>
+  </tbody>
+</Table>
+
+The same rule applies to any block that cannot be made narrower without
+destroying its meaning. Local scrolling is the answer, never a page that shifts
+under the reader.
+
+## Edge cases
+
+Two headings in this file share the same text on purpose. The table of contents
+suffixes the second one so the two anchors stay distinct, and the links in the
+rail point at the right targets rather than both landing on the first heading.
+The heading below is the duplicate.
+
+## Edge cases
+
+If both entries in the table of contents scroll to the same place, the anchor
+generator and the table of contents builder have drifted apart, which is exactly
+the failure this file exists to make visible.
+
+The last thing worth stating plainly is that the entire page has to work with
+JavaScript disabled. The table of contents is rendered on the server as a static
+list, its links are ordinary anchors, and the only thing lost without scripting
+is the highlight that marks which section the reader is currently inside. That
+is a genuine enhancement rather than a load bearing feature, which is the test
+any client side addition to this layout has to pass.
