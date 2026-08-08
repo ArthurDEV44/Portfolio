@@ -550,6 +550,11 @@
 }
 
 .article-body {
+  /* Room to scroll past the last line. Without it the closing paragraph stops
+     at the bottom edge of the window and cannot be brought up to a comfortable
+     reading position, which is where a reader spends the end of a long piece.
+     Eight rhythm units, so the page still lands on the same ladder. */
+  padding-bottom: calc(var(--article-rhythm) * 8);
   max-width: var(--article-measure);
   color: var(--fg);
   font-size: 16px;
@@ -572,24 +577,30 @@
 
 /* Hierarchy is carried by size, weight and the space above a heading, never by
    a grid rule: with grid mode off the sections still read as sections. */
+/* Section headings run in the same serif as the article title, so the page has
+   one voice from the h1 down. The family carries the hierarchy that weight used
+   to: Instrument Serif ships a single 400, and asking for 620 would synthesise
+   a fake bold. Tracking goes back to normal for the same reason — the negative
+   value was cut for Geist and closes a display serif up too far. */
+.article-body h2,
+.article-body h3 {
+  color: var(--fg);
+  font-family:
+    var(--font-instrument-serif), "Instrument Serif", ui-serif, Georgia, serif;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: var(--article-rhythm);
+  scroll-margin-top: 96px;
+}
+
 .article-body h2 {
   margin: calc(var(--article-rhythm) * 3) 0 var(--article-rhythm);
-  color: var(--fg);
-  font-size: 22px;
-  line-height: var(--article-rhythm);
-  font-weight: 620;
-  letter-spacing: -0.02em;
-  scroll-margin-top: 96px;
+  font-size: 24px;
 }
 
 .article-body h3 {
   margin: calc(var(--article-rhythm) * 2) 0 var(--article-rhythm);
-  color: var(--fg);
-  font-size: 17px;
-  line-height: var(--article-rhythm);
-  font-weight: 620;
-  letter-spacing: -0.015em;
-  scroll-margin-top: 96px;
+  font-size: 19px;
 }
 
 /* Tailwind preflight strips list markers globally, so long-form has to ask for
