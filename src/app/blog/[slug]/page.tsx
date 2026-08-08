@@ -46,6 +46,9 @@ export async function generateMetadata({
     keywords: meta.tags,
     alternates: {
       canonical: `/blog/${slug}`,
+      types: {
+        "application/rss+xml": "/rss.xml",
+      },
     },
     openGraph: {
       type: "article",
