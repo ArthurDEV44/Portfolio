@@ -1,3 +1,4 @@
+import type { Post } from "@/lib/blog";
 import { projects, siteConfig } from "@/lib/site.config";
 
 function absoluteUrl(path: string) {
@@ -133,5 +134,46 @@ export function getJsonLd() {
     website,
     profilePage,
     projects: projectNodes,
+  };
+}
+
+/* The article graph carries the canonical `Person` node alongside the post so
+   the `@id` in `author` and `publisher` resolves on the page itself, instead of
+   pointing at an entity a validator would have to fetch from the homepage. The
+   node is reused verbatim, never restated with a subset of its properties. */
+export function getBlogPostingJsonLd(post: Post) {
+  const personId = `${siteConfig.url}/#person`;
+  const url = absoluteUrl(`/blog/${post.slug}`);
+
+  const blogPosting = {
+    "@type": "BlogPosting",
+    "@id": `${url}#post`,
+    url,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+    headline: post.meta.title,
+    description: post.meta.description,
+    inLanguage: siteConfig.language,
+    datePublished: post.meta.publishedAt,
+    ...(post.meta.updatedAt ? { dateModified: post.meta.updatedAt } : {}),
+    ...(post.meta.tags?.length ? { keywords: post.meta.tags } : {}),
+    author: {
+      "@id": personId,
+    },
+    publisher: {
+      "@id": personId,
+    },
+  };
+
+  const { person } = getJsonLd();
+
+  return {
+    graph: {
+      "@context": "https://schema.org",
+      "@graph": [blogPosting, person],
+    },
+    blogPosting,
   };
 }

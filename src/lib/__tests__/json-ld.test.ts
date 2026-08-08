@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { getJsonLd } from "@/lib/json-ld";
+import type { Post, PostMeta } from "@/lib/blog";
+import { getBlogPostingJsonLd, getJsonLd } from "@/lib/json-ld";
 import { projects, siteConfig } from "@/lib/site.config";
 
 describe("getJsonLd", () => {
@@ -101,5 +102,87 @@ describe("getJsonLd", () => {
         });
       }
     });
+  });
+});
+
+describe("getBlogPostingJsonLd", () => {
+  const personId = `${siteConfig.url}/#person`;
+
+  function post(slug: string, meta: Partial<PostMeta> = {}): Post {
+    return {
+      slug,
+      meta: {
+        title: "Shipping a blog without a content layer",
+        description: "Why the MDX pipeline already in the repo was enough.",
+        publishedAt: "2026-08-08",
+        ...meta,
+      },
+      wordCount: 1800,
+      readingTimeMinutes: 9,
+      toc: [],
+    };
+  }
+
+  it("describes the article as a BlogPosting at its own absolute URL", () => {
+    const { blogPosting } = getBlogPostingJsonLd(post("no-content-layer"));
+    const url = `${siteConfig.url}/blog/no-content-layer`;
+
+    expect(blogPosting["@type"]).toBe("BlogPosting");
+    expect(blogPosting["@id"]).toBe(`${url}#post`);
+    expect(blogPosting.url).toBe(url);
+    expect(blogPosting.mainEntityOfPage).toEqual({
+      "@type": "WebPage",
+      "@id": url,
+    });
+    expect(blogPosting.headline).toBe(
+      "Shipping a blog without a content layer",
+    );
+    expect(blogPosting.description).toBe(
+      "Why the MDX pipeline already in the repo was enough.",
+    );
+    expect(blogPosting.inLanguage).toBe(siteConfig.language);
+  });
+
+  it("attributes the article to the existing Person by reference alone", () => {
+    const { blogPosting } = getBlogPostingJsonLd(post("attribution"));
+
+    expect(blogPosting.author).toEqual({ "@id": personId });
+    expect(blogPosting.publisher).toEqual({ "@id": personId });
+    expect(Object.keys(blogPosting.author)).toEqual(["@id"]);
+  });
+
+  it("ships the Person node in the graph so the reference resolves on the page", () => {
+    const { graph, blogPosting } = getBlogPostingJsonLd(post("graph"));
+
+    expect(graph["@context"]).toBe("https://schema.org");
+    expect(graph["@graph"]).toHaveLength(2);
+    expect(graph["@graph"][0]).toBe(blogPosting);
+    expect(graph["@graph"][1]).toEqual(getJsonLd().person);
+  });
+
+  it("emits dateModified only when the post declares an update", () => {
+    const updated = getBlogPostingJsonLd(
+      post("updated", { updatedAt: "2026-09-01" }),
+    ).blogPosting;
+    expect(updated.datePublished).toBe("2026-08-08");
+    expect(updated).toHaveProperty("dateModified", "2026-09-01");
+
+    const untouched = getBlogPostingJsonLd(post("untouched")).blogPosting;
+    expect(untouched.datePublished).toBe("2026-08-08");
+    expect(untouched).not.toHaveProperty("dateModified");
+  });
+
+  it("carries tags as keywords, and omits the field when there are none", () => {
+    expect(
+      getBlogPostingJsonLd(post("tagged", { tags: ["mdx", "next"] }))
+        .blogPosting,
+    ).toHaveProperty("keywords", ["mdx", "next"]);
+
+    expect(
+      getBlogPostingJsonLd(post("untagged")).blogPosting,
+    ).not.toHaveProperty("keywords");
+    expect(
+      getBlogPostingJsonLd(post("empty-tags", { tags: [] })).blogPosting,
+    ).not.toHaveProperty("keywords");
   });
 });

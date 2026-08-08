@@ -10,6 +10,7 @@ import {
   getPublishedPosts,
   hasMinimap,
 } from "@/lib/blog";
+import { getBlogPostingJsonLd } from "@/lib/json-ld";
 import { siteConfig } from "@/lib/site.config";
 import { postMdxComponents } from "@/mdx-components";
 
@@ -96,61 +97,71 @@ export default async function PostPage({ params }: PostPageProps) {
      exposed gets the minimap where there is margin for it and the disclosure
      where there is not. CSS picks between them; neither exists otherwise. */
   const withToc = hasMinimap(post);
+  const jsonLd = getBlogPostingJsonLd(post);
 
   return (
-    <article className="article p-4">
-      {/* Outside the layout grid on purpose: it sticks against the article as a
+    <>
+      <script
+        type="application/ld+json"
+        // oxlint-disable-next-line react/no-danger -- JSON-LD from validated post metadata and static siteConfig, output is JSON.stringify'd and <-escaped
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd.graph).replace(/</g, "\\u003c"),
+        }}
+      />
+      <article className="article p-4">
+        {/* Outside the layout grid on purpose: it sticks against the article as a
           whole, and a zero-height grid row would give it nothing to travel in. */}
-      {withToc && <ArticleMinimap entries={post.toc} />}
+        {withToc && <ArticleMinimap entries={post.toc} />}
 
-      <div className="article-layout">
-        <div className="article-main">
-          <header className="border-grid-soft border-b border-dashed pb-6">
-            {meta.draft && (
-              <p className="text-foreground mb-3 inline-block border border-[color:var(--line)] px-2 py-0.5 font-mono text-xs uppercase">
-                Draft
-              </p>
-            )}
-
-            <h1 className="text-foreground font-serif text-[44px] leading-[52px]">
-              {meta.title}
-            </h1>
-
-            <p className="text-muted-foreground mt-3 text-sm leading-relaxed font-light">
-              {meta.description}
-            </p>
-
-            {/* Visible in the page, not only in the metadata: search and citation
-                agents cross-check the rendered date against the markup. */}
-            <p className="text-muted-foreground mt-4 flex flex-wrap items-center gap-2 text-xs font-light">
-              <time dateTime={meta.publishedAt}>
-                {formatPostDate(meta.publishedAt)}
-              </time>
-
-              {meta.updatedAt && (
-                <>
-                  <span aria-hidden="true">·</span>
-                  <span>
-                    Updated{" "}
-                    <time dateTime={meta.updatedAt}>
-                      {formatPostDate(meta.updatedAt)}
-                    </time>
-                  </span>
-                </>
+        <div className="article-layout">
+          <div className="article-main">
+            <header className="border-grid-soft border-b border-dashed pb-6">
+              {meta.draft && (
+                <p className="text-foreground mb-3 inline-block border border-[color:var(--line)] px-2 py-0.5 font-mono text-xs uppercase">
+                  Draft
+                </p>
               )}
 
-              <span aria-hidden="true">·</span>
-              <span>{post.readingTimeMinutes} min read</span>
-            </p>
-          </header>
+              <h1 className="text-foreground font-serif text-[44px] leading-[52px]">
+                {meta.title}
+              </h1>
 
-          {withToc && <ArticleToc entries={post.toc} />}
+              <p className="text-muted-foreground mt-3 text-sm leading-relaxed font-light">
+                {meta.description}
+              </p>
 
-          <div className="article-body pt-[26px]">
-            <Content components={postMdxComponents(post.toc)} />
+              {/* Visible in the page, not only in the metadata: search and citation
+                agents cross-check the rendered date against the markup. */}
+              <p className="text-muted-foreground mt-4 flex flex-wrap items-center gap-2 text-xs font-light">
+                <time dateTime={meta.publishedAt}>
+                  {formatPostDate(meta.publishedAt)}
+                </time>
+
+                {meta.updatedAt && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span>
+                      Updated{" "}
+                      <time dateTime={meta.updatedAt}>
+                        {formatPostDate(meta.updatedAt)}
+                      </time>
+                    </span>
+                  </>
+                )}
+
+                <span aria-hidden="true">·</span>
+                <span>{post.readingTimeMinutes} min read</span>
+              </p>
+            </header>
+
+            {withToc && <ArticleToc entries={post.toc} />}
+
+            <div className="article-body pt-[26px]">
+              <Content components={postMdxComponents(post.toc)} />
+            </div>
           </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </>
   );
 }
