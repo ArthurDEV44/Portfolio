@@ -1,0 +1,269 @@
+export const meta = {
+  title: "Effort is not a quality dial",
+  description:
+    "Why maxing out the dial does not improve the result, and how to route model and effort by phase of work instead of by reflex.",
+  publishedAt: "2026-08-08",
+  tags: ["context-engineering", "agents", "claude-code"],
+};
+
+We tend to believe that running a model at the top of its capabilities
+guarantees the best result. It does not, and it often does the opposite. I am
+writing this after several years of running coding agents in production, on
+real projects. I take Opus 5 as the reference but this applies to every model
+(gpt-5.6-sol, terra, luna, grok-4.5, Kimi K3, and the rest).
+
+The reflex is always the same when you discover effort levels: "I need to set
+<span className="rainbow-text">max</span> to get the best output." That reflex
+is exactly what costs you, and not only in tokens.
+
+## What effort actually controls
+
+On Claude Code the levels are `low`, `medium`, `high`, `xhigh` and `max`. One
+clarification first, because the confusion is everywhere:
+<span className="shimmer-text">ultracode</span> is not an effort level. It is a
+multi-agent orchestration keyword, and it belongs to a different mechanism.
+Putting them in the same list muddles everything that follows.
+
+What effort controls is thinking depth and overall token spend. A low effort
+produces fewer reasoning turns, less preamble, and above all fewer, more
+consolidated tool calls. A high effort does the opposite: the model explores
+more before answering.
+
+That has a consequence Anthropic's documentation states plainly: `max` can
+deliver gains on some use cases, but it shows diminishing returns from the
+increased token spend, and it is prone to overthinking. `max` is not a better
+`xhigh`, it is a costlier one, with a risk of circling on tasks that do not
+deserve it.
+
+The corollary is more surprising still. On Opus 5 the official recommendation
+is to start at `xhigh` for coding and agentic work, `high` for the rest, then
+sweep downward, because `low` and `medium` hold up far better than expected on
+this model. Step down one level as long as the output holds.
+
+One nuance before going further. Saying that `low` holds up is not saying that
+every level is equivalent. On genuinely hard tasks the gap is real. What is
+documented is that the low levels hold up better than their reputation, not
+that they match the high ones.
+
+## Scientists, engineers, workers
+
+Take a complex production line, say a launch vehicle. There are several
+degrees of mental effort, and I do mean mental, not physical. Scientists
+imagine, calculate, conceptualize. Engineers structure, plan, turn the concept
+into a specification. Workers build by following the plans.
+
+<figure className="article-diagram">
+  <div className="article-diagram-flow">
+    <div className="article-diagram-node">
+      <span className="article-diagram-role">Scientists</span>
+      <span className="article-diagram-verb">conceive</span>
+    </div>
+    <span className="article-diagram-arrow" aria-hidden="true">▶</span>
+    <div className="article-diagram-node">
+      <span className="article-diagram-role">Engineers</span>
+      <span className="article-diagram-verb">specify</span>
+    </div>
+    <span className="article-diagram-arrow" aria-hidden="true">▶</span>
+    <div className="article-diagram-node">
+      <span className="article-diagram-role">Workers</span>
+      <span className="article-diagram-verb">execute</span>
+    </div>
+  </div>
+  <figcaption className="article-diagram-legend">
+    <span>thinking effort</span>
+    <span className="article-diagram-rule" aria-hidden="true" />
+    <span>decreasing</span>
+  </figcaption>
+</figure>
+
+The flow runs one way, and each stage narrows the decision space of the next.
+That is what makes the last stage cheap: it no longer has to choose.
+
+With models and their effort levels it works exactly the same way. You do not
+use a `low` effort to explore, conceptualize, or settle an open problem. You
+use `xhigh` reasoning for that, and the low effort builds by following the
+plan to the letter.
+
+What do you gain? A very significant token saving, faster delivery, and better
+quality. Because you do not put a scientist on the assembly line: it is not
+their job, and they will improvise where you wanted execution.
+
+## Pick the model before the effort
+
+Before setting the dial, you need to know which model you are setting it on.
+And there is a naming trap here.
+
+At Anthropic the latest generation is not a single line. Opus 5 is the direct
+successor to the Opus line. Fable 5 is a separate tier at twice the price per
+token, with a different declared territory: the most demanding reasoning and
+long-horizon agentic work. The migration documentation is explicit, word for
+word: Fable 5 is not the default upgrade path for the Opus line, and a generic
+request to move to the best model means Opus 5.
+
+Concretely, a SWE-style benchmark does not separate the two. Those benchmarks
+measure short, well-specified, single-objective tasks, scored automatically.
+That is exactly the regime where Opus 5 caught up. Fable 5's claimed edge lies
+elsewhere: single requests that run for tens of minutes, delegation to
+long-running subagents, navigating ambiguity.
+
+Hence a counterintuitive conclusion if you work with a PRD: writing a good PRD
+absorbs the ambiguity upfront. And navigating ambiguity is precisely one of
+Fable 5's named strengths. By structuring your upstream well, you remove part
+of its advantage before it even starts.
+
+Two non-functional constraints often settle the question before performance
+does. Refusals first: the latest generation ships hardened cybersecurity
+guardrails, and a request can be declined with an explicit refusal status
+rather than an error. Fable 5 targets cybersecurity content broadly, and the
+documentation acknowledges that legitimate adjacent work, security tooling
+included, can trigger false positives. Opus 5 has the same guardrails, more
+permissive. On authentication, encryption, or secrets-handling code, the most
+capable model is therefore not necessarily the one that will agree to work.
+Latency next: a model whose turns run for several minutes is excellent on an
+autonomous run and painful in an interactive session.
+
+## What effort does not control
+
+Three traps, where the reflex is to touch the dial while the lever is
+somewhere else.
+
+**Verbosity.** On Opus 5, changing effort does not reliably shorten the
+visible answer. It moves the volume of thinking, not the output length. If
+answers run long, the lever is the prompt, not the setting. A short
+conciseness instruction is enough to cut response length noticeably.
+
+**Scope.** A model that adds steps you did not ask for is not doing it because
+effort is too high. It does it because nothing tells it where to stop.
+
+**Verification.** On recent models, explicitly asking for self-verification
+produces over-verification, because they already do it. This inverts a classic
+prompting best practice, and it surprises people: removing the instruction
+improves behavior with no capability regression.
+
+A word on delegation, because it is the mistake I made myself for a long time.
+You often read that a high effort "spawns subagents to widen the scope". The
+direction is right, the mechanism is more indirect: effort controls thinking
+depth and token spend, and a low effort produces fewer, more consolidated tool
+calls. Delegation to subagents comes from the harness and the model's own
+tendency, not from the dial. On Opus 5 it is even worth watching in the other
+direction: it delegates readily, to the point where an explicit cap helps.
+
+## Your instruction files are context
+
+This is the most underrated point, and the closest to the subject.
+
+When people talk about context engineering, they think about the request
+prompt. But in an agent session, what reaches the model also includes the
+global instruction file, the loaded skills, the tool descriptions. That corpus
+builds up over months and, in most cases, never gets audited, even though it
+is reloaded on every call.
+
+The problem is not its size. The problem is that it holds instructions written
+for earlier models, which are now actively harmful. Three families come up all
+the time.
+
+**Inflationary pressure.** The capitals, the CRITICAL, the MUST, the "when in
+doubt use this tool" were added because older models under-triggered. Current
+models follow the system prompt very closely, so those amplifiers now cause
+over-triggering.
+
+**Scaffolding replaced by a feature.** The "think step by step", the scratchpad
+tags, the response prefills to force JSON: all of it is either native now or
+replaced by an API option.
+
+**Over-specification.** A numbered procedure for a judgment task constrains the
+model's exploration and degrades the output. The migration documentation says
+it bluntly: prompts and skills written for earlier models are often too
+prescriptive and reduce output quality.
+
+The dividing line is simple. What only the author knows stays: the audience,
+the environment, the quality bar, the constraints and above all their reasons.
+What the model already knows goes: the generic virtues, the reminders of
+behavior it has by default, the workarounds for defects that no longer exist.
+
+Watch the reverse trap, the most dangerous one when you apply this
+mechanically: context is not what you cut. A prompt that is too short produces
+generic output, because the model fills the gaps with safe defaults.
+
+## The pipeline, phase by phase
+
+Here is the routing I use today.
+
+<Table>
+  <thead>
+    <tr>
+      <th scope="col">Phase</th>
+      <th scope="col">Model</th>
+      <th scope="col">Effort</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Exploration, research, PRD writing</th>
+      <td>Opus 5</td>
+      <td><code>xhigh</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Implementing a substantial epic, autonomously</th>
+      <td>Fable 5</td>
+      <td><code>xhigh</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Implementing a narrow epic</th>
+      <td>Opus 5</td>
+      <td><code>high</code>, test <code>medium</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Review and certification</th>
+      <td>Opus 5</td>
+      <td><code>high</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Authentication, encryption, secrets modules</th>
+      <td>Opus 5</td>
+      <td><code>xhigh</code></td>
+    </tr>
+  </tbody>
+</Table>
+
+Two notes on this table.
+
+Review stays at `high` and no higher, because bug detection holds up at
+reduced effort on Opus 5. That makes a quick pass at writing time practical,
+then a deeper pass later. Raising effort here buys little.
+
+The security audit stays on Opus 5 for a precise reason: Fable 5's
+bug-detection gains are documented with an explicit exclusion of
+security-focused analysis, where the cyber classifiers apply.
+
+I run one epic per session, with a fresh context every time. Recent models
+lose long-horizon coherence when constraints arrive progressively: the same
+work, given at once or spread over six exchanges, does not produce the same
+result, at identical model and effort.
+
+## Every time a model ships
+
+Do not judge a new model on its benchmarks. Those benchmarks test isolated,
+well-specified cases, and vendors optimize for those scores, against their own
+previous generation and against the competition. A higher number says nothing
+about your codebase, your tooling and the way you work.
+
+Do your own research. Read the vendor's posts in full rather than the summary
+table: the behavioral changes, the removed parameters and the recommended
+settings are in the prose. Block a day for it on every release.
+
+Then go back over your configuration. Do your skills follow the new rules,
+does your `.claude` or your `.codex` match the announced direction, do the
+instructions you carry around still serve a purpose. Understand the model: its
+cost, the way it works, what it is built for.
+
+---
+
+Thanks for reading the whole article. For that, here is my Claude
+configuration: [github.com/arthjean/claude-config](https://github.com/arthjean/claude-config).
+
+You can also download every skill I use, some of which I wrote myself:
+
+<CopyCommand command="bunx skills add arthjean/skills" />
+
+The repository is here: [github.com/arthjean/skills](https://github.com/arthjean/skills).
