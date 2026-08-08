@@ -7,6 +7,7 @@
 |---------|------|--------|---------|
 | 1.0 | 2026-08-08 | Arthur Jean | Rédaction initiale, direction de mise en page B validée |
 | 1.1 | 2026-08-08 | Arthur Jean | Retrait de l'epic de contenu d'amorçage : la rédaction éditoriale est hors périmètre. Vérification visuelle reportée sur un fichier de fixture en brouillon, routable en développement |
+| 1.2 | 2026-08-08 | Arthur Jean | US-007 : la surcharge `table` devient un composant `Table`. Sans `remark-gfm`, que C6 et FR-13 interdisent, aucune construction Markdown ne produit de nœud `table`, et un `<table>` écrit à la main compile en balise littérale qui ne traverse pas la table des composants. Seul un nom capitalisé y est résolu, ce qui permet de fournir le conteneur de défilement au lieu d'exiger de l'auteur des rôles ARIA sur chaque tableau |
 
 ## Problem Statement
 
@@ -244,11 +245,11 @@ Donner à l'article sa forme définitive : mesure de lecture, rythme vertical, h
 **Dependencies:** Blocked by US-006
 
 **Acceptance Criteria:**
-- [ ] `src/mdx-components.tsx` surcharge `h2`, `h3`, `p`, `ul`, `ol`, `li`, `blockquote`, `a`, `hr`, `table`, `strong`, `em`, `code` en ligne
+- [ ] `src/mdx-components.tsx` surcharge `h2`, `h3`, `p`, `ul`, `ol`, `li`, `blockquote`, `a`, `hr`, `strong`, `em`, `code` en ligne, et expose un composant `Table` disponible sans import
 - [ ] `h2` et `h3` reçoivent un `id` produit par la fonction `slugify` de US-001, identique à celui calculé pour la table des matières
 - [ ] Étant donné un lien externe, quand il est rendu, alors il porte `rel="noopener noreferrer"` et un `target="_blank"`, et un lien interne n'en porte pas
 - [ ] Les ancres de titres sont atteignables au clavier et respectent le style `:focus-visible` global (`src/app/globals.css`)
-- [ ] Étant donné un tableau plus large que la colonne de texte, quand il est rendu, alors il défile horizontalement dans son propre conteneur `overflow-x: auto`, et le `body` ne défile pas
+- [ ] Étant donné un tableau plus large que la colonne de texte, quand il est rendu, alors il défile horizontalement dans le conteneur `overflow-x: auto` fourni par `Table`, ce conteneur est atteignable au clavier, le tableau conserve ses sémantiques natives de lignes et de cellules, et le `body` ne défile pas
 - [ ] Aucune classe de `@tailwindcss/typography` n'est utilisée
 - [ ] L'ordre des titres reste `h1` puis `h2` puis `h3` sans saut de niveau, `h1` étant réservé au titre d'article rendu par la page
 - [ ] Un fichier de fixture `src/content/blog/_kitchen-sink.mdx`, marqué `draft: true`, exerce chaque primitive surchargée : `h2`, `h3`, paragraphes, liste à puces, liste ordonnée, citation, lien interne, lien externe, tableau plus large que la colonne, code en ligne, et au moins trois blocs de code dans des langages différents dont un contenant une ligne dépassant la largeur de la colonne

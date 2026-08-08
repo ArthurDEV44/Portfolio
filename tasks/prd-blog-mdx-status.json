@@ -17,10 +17,11 @@
     {
       "id": "EP-002",
       "title": "Typographie long-form et mise en page \"planche technique\"",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P0",
       "stories_total": 6,
-      "stories_done": 0
+      "stories_done": 5,
+      "stories_cancelled": 1
     },
     {
       "id": "EP-003",
@@ -96,73 +97,77 @@
       "id": "US-006",
       "title": "Fondation typographique de l'article",
       "epic": "EP-002",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P0",
       "size": "M",
       "blocked_by": ["US-003"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08"
     },
     {
       "id": "US-007",
       "title": "Surcharges de composants MDX",
       "epic": "EP-002",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P0",
       "size": "M",
       "blocked_by": ["US-006"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08",
+      "note": "A lowercase `table` override is unreachable: without remark-gfm no markdown construct produces a table node, and an authored <table> compiles to a literal jsxs(\"table\") that bypasses the components map, verified in the compiled fixture module. PRD 1.2 replaces it with a `Table` component, which a capitalized name does resolve through. The wrapper carries the overflow and the focus, so the table keeps display: table and its native row and cell semantics, and the author no longer hand-writes ARIA roles."
     },
     {
       "id": "US-008",
       "title": "Blocs de code Shiki en composant serveur",
       "epic": "EP-002",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P0",
       "size": "L",
       "blocked_by": ["US-007"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08"
     },
     {
       "id": "US-009",
       "title": "Structure à deux colonnes avec rail droit",
       "epic": "EP-002",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P0",
       "size": "L",
       "blocked_by": ["US-002", "US-006"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08",
+      "note": "The 220px right rail and its dotted separator are superseded by the left proximity minimap, per Arthur's decision of 2026-08-08. Every other criterion verified. The publication and update dates and the reading time moved to the article header, where they are visible in every regime; `updatedAt` was missing entirely and was added during review."
     },
     {
       "id": "US-010",
       "title": "Dégradation automatique vers la colonne unique",
       "epic": "EP-002",
-      "status": "TODO",
+      "status": "DONE",
       "priority": "P0",
       "size": "M",
       "blocked_by": ["US-009"],
-      "started_at": null,
-      "completed_at": null,
-      "reviewed_at": null
+      "started_at": "2026-08-08",
+      "completed_at": "2026-08-08",
+      "reviewed_at": "2026-08-08",
+      "note": "Below the minimap's threshold nothing was rendered at all, leaving no table of contents under 1024px nor in the 1250 to 1410px band where the shell's rails narrow the article. A server-rendered `details` disclosure above the text now covers exactly the regimes the minimap does not."
     },
     {
       "id": "US-011",
       "title": "Notes latérales ancrées",
       "epic": "EP-002",
-      "status": "TODO",
+      "status": "CANCELLED",
       "priority": "P2",
       "size": "M",
       "blocked_by": ["US-009"],
       "started_at": null,
       "completed_at": null,
-      "reviewed_at": null
+      "reviewed_at": null,
+      "note": "Superseded: the right rail was replaced by a left proximity minimap, so there is no rail for a side note to anchor into. Decided by Arthur on 2026-08-08."
     },
     {
       "id": "US-012",
