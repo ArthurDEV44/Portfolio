@@ -4,10 +4,14 @@ import {
   buildToc,
   countWords,
   formatPostDate,
+  hasMinimap,
   type Post,
+  MINIMAP_MIN_SECTIONS,
+  MINIMAP_MIN_WORD_COUNT,
   readingTime,
   slugify,
   sortPosts,
+  type TocEntry,
   validatePostMeta,
 } from "@/lib/blog";
 
@@ -205,5 +209,58 @@ describe("formatPostDate", () => {
   it("renders the calendar date without a timezone shift", () => {
     expect(formatPostDate("2026-08-08")).toBe("August 8, 2026");
     expect(formatPostDate("2026-01-01")).toBe("January 1, 2026");
+  });
+});
+
+describe("hasMinimap", () => {
+  const sections = (count: number, depth: 2 | 3 = 2): TocEntry[] =>
+    Array.from({ length: count }, (_, index) => ({
+      depth,
+      text: `Section ${index}`,
+      id: `section-${index}`,
+    }));
+
+  it("keeps the minimap when both thresholds are met exactly", () => {
+    expect(
+      hasMinimap({
+        wordCount: MINIMAP_MIN_WORD_COUNT,
+        toc: sections(MINIMAP_MIN_SECTIONS),
+      }),
+    ).toBe(true);
+  });
+
+  it("drops the minimap one word below the word threshold", () => {
+    expect(
+      hasMinimap({
+        wordCount: MINIMAP_MIN_WORD_COUNT - 1,
+        toc: sections(MINIMAP_MIN_SECTIONS),
+      }),
+    ).toBe(false);
+  });
+
+  it("drops the minimap one section below the heading threshold", () => {
+    expect(
+      hasMinimap({
+        wordCount: MINIMAP_MIN_WORD_COUNT * 4,
+        toc: sections(MINIMAP_MIN_SECTIONS - 1),
+      }),
+    ).toBe(false);
+  });
+
+  /* Subsections structure a section, they do not create one, so they must not
+     be able to push a shallow article over the threshold on their own. */
+  it("counts only depth 2 entries towards the heading threshold", () => {
+    expect(
+      hasMinimap({
+        wordCount: MINIMAP_MIN_WORD_COUNT * 4,
+        toc: [...sections(2), ...sections(6, 3)],
+      }),
+    ).toBe(false);
+  });
+
+  it("drops the minimap for an article with no headings at all", () => {
+    expect(hasMinimap({ wordCount: MINIMAP_MIN_WORD_COUNT * 4, toc: [] })).toBe(
+      false,
+    );
   });
 });

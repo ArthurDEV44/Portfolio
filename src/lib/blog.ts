@@ -214,6 +214,24 @@ export function formatPostDate(isoDate: string): string {
   return dateFormatter.format(new Date(`${isoDate}T00:00:00Z`));
 }
 
+/* The minimap turns the section list into a stack of dashes beside the text.
+   Below these thresholds it would be three marks nobody needs, and
+   `docs/design.md` forbids decoration without a named role, so it is dropped
+   instead. Defined once here; the layout never hardcodes either number. */
+export const MINIMAP_MIN_WORD_COUNT = 1500;
+export const MINIMAP_MIN_SECTIONS = 4;
+
+export function countSections(toc: TocEntry[]): number {
+  return toc.filter((entry) => entry.depth === 2).length;
+}
+
+export function hasMinimap(post: Pick<Post, "wordCount" | "toc">): boolean {
+  return (
+    post.wordCount >= MINIMAP_MIN_WORD_COUNT &&
+    countSections(post.toc) >= MINIMAP_MIN_SECTIONS
+  );
+}
+
 /* The slug is the file name, nothing else: dropping a file in the directory is
    the entire publishing act. */
 export function getPostSlugs(): string[] {
