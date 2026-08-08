@@ -46,6 +46,12 @@
   --rainbow-l: 0.56;
   --rainbow-c: 0.17;
 
+  /* Shimmer accent: a band travelling across a word. The sweep runs *darker*
+     here and lighter in dark mode, so the moving band always raises contrast
+     against the canvas instead of dropping half the word below 4.5:1. */
+  --shimmer-base: oklch(0.52 0.16 315);
+  --shimmer-sweep: oklch(0.38 0.16 315);
+
   /* Grid mode: structural rules and softer row rules. Both collapse to
      transparent when grid mode is off, which is the whole toggle. */
   --grid-line: color-mix(in oklch, var(--line) 62%, transparent);
@@ -109,6 +115,8 @@
   --destructive-foreground: var(--navy-ink);
   --rainbow-l: 0.79;
   --rainbow-c: 0.15;
+  --shimmer-base: oklch(0.82 0.132 315);
+  --shimmer-sweep: oklch(0.95 0.05 315);
 }
 
 :root[data-grid="off"] {
@@ -970,9 +978,40 @@
   }
 }
 
+/* Marks the one word in a sentence that corrects a common misreading. Reserved
+   for that job: a second shimmering word on the same page spends the signal. */
+.shimmer-text {
+  background-image: linear-gradient(
+    100deg,
+    var(--shimmer-base) 40%,
+    var(--shimmer-sweep) 50%,
+    var(--shimmer-base) 60%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer-sweep 2.6s linear infinite;
+}
+
+@keyframes shimmer-sweep {
+  to {
+    background-position: -150% 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rainbow-text {
     animation: none;
+  }
+
+  /* A static gradient would leave one half of the word paler than the other;
+     fall back to the flat violet instead. */
+  .shimmer-text {
+    animation: none;
+    background-image: none;
+    color: var(--shimmer-base);
   }
 }
 
