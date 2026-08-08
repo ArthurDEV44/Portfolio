@@ -279,7 +279,10 @@ export function GridShell({
             </div>
           </aside>
 
-          <div className="scrollbar-hide flex h-full flex-1 scroll-pt-28 flex-col items-center overflow-y-auto overscroll-contain min-[1250px]:scroll-pt-0">
+          {/* This container is the scrollport, not the document, so in-page
+              anchors land here: without `scroll-smooth` every jump to a
+              heading or a section is instant. */}
+          <div className="scrollbar-hide flex h-full flex-1 scroll-pt-28 flex-col items-center overflow-y-auto overscroll-contain scroll-smooth motion-reduce:scroll-auto min-[1250px]:scroll-pt-0">
             <div className={content}>
               {children}
 
