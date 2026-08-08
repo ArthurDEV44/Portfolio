@@ -726,6 +726,82 @@
   min-width: 100%;
 }
 
+/* A flow diagram, not a code block: box-drawing characters were the obvious
+   first reach and the wrong one, because Geist Mono does not join them, so the
+   corners never meet the sides. Real boxes also keep the labels as selectable,
+   translatable text instead of an ASCII picture. The nodes share the width
+   equally, which is what makes the row read as one sequence. */
+.article-diagram {
+  margin: calc(var(--article-rhythm) * 2) 0;
+  padding: 24px 20px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.article-diagram-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.article-diagram-node {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 16px 8px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  text-align: center;
+}
+
+.article-diagram-role {
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--fg);
+}
+
+.article-diagram-verb {
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.article-diagram-arrow {
+  align-self: center;
+  flex: none;
+  font-size: 13px;
+  color: var(--fg-faint);
+}
+
+.article-diagram-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.article-diagram-rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--line);
+}
+
+/* Below the point where three columns stop holding a two-word label, the
+   sequence stacks and the arrows turn with it. */
+@media (max-width: 520px) {
+  .article-diagram-flow {
+    flex-direction: column;
+  }
+
+  .article-diagram-arrow {
+    transform: rotate(90deg);
+  }
+}
+
 /* Shiki runs with `defaultColor: false`, so every token carries both palettes
    as custom properties and the theme switch is a CSS selector, not a re-render
    and not a single byte of client JavaScript. */
