@@ -315,6 +315,409 @@
   color: var(--fg-muted);
 }
 
+/* Long-form blog typography. Deliberately separate from `.legal-article`: the
+   legal pages read muted at weight 300, an article reads at full ink weight.
+   Every block gap is a multiple of 26px, which is exactly one line box at 16px
+   and line-height 1.625, so the vertical rhythm survives any mix of blocks. */
+.article {
+  --article-measure: 610px;
+  --article-rhythm: 26px;
+  --minimap-dash: 24px;
+  --minimap-gutter: 28px;
+
+  /* The minimap appears on the space the article actually got, not on the
+     viewport: the shell spends a fixed 640px on its own rails, so the same
+     window width leaves very different room on different routes. */
+  container-type: inline-size;
+  container-name: article;
+}
+
+.article-layout {
+  display: grid;
+  grid-template-columns: minmax(0, var(--article-measure));
+  justify-content: center;
+}
+
+.article-main {
+  min-width: 0;
+}
+
+/* Out of the layout entirely until there is room for it: no reserved track, so
+   the text column stays centred whether the minimap is there or not. */
+.article-minimap {
+  display: none;
+}
+
+.article-minimap ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-minimap ol {
+  /* Overwritten by the component so a long article still fits the window. */
+  --minimap-step: 7px;
+}
+
+.article-minimap li {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+/* The mark is a band tall enough to be hit; the dash it draws is one pixel of
+   that band. Pointing at a 1px target is not a navigation control. */
+.article-minimap .dash {
+  --proximity: 0;
+
+  position: relative;
+  display: block;
+  width: var(--minimap-dash);
+  height: var(--minimap-step);
+}
+
+.article-minimap .dash::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--fg-faint);
+  transform: translateY(-50%) scaleX(calc(1 + var(--proximity) * 0.75));
+  transform-origin: right center;
+  transition: background-color 160ms ease;
+}
+
+/* Three lengths, so the stack reads as document rhythm: a section is the full
+   dash, a subsection sits under it, and a body block is the short baseline. */
+.article-minimap li[data-kind="subsection"] .dash {
+  width: calc(var(--minimap-dash) * 0.72);
+}
+
+.article-minimap li[data-kind="block"] .dash {
+  width: calc(var(--minimap-dash) * 0.45);
+}
+
+.article-minimap li[data-kind="block"] .dash::before {
+  background: color-mix(in oklch, var(--fg-faint) 62%, transparent);
+}
+
+.article-minimap a.dash:hover::before,
+.article-minimap a.dash:focus-visible::before {
+  background: var(--fg);
+}
+
+/* The current section is marked by ink alone, so the mark survives both reduced
+   motion and a pointer that never comes near. */
+.article-minimap .dash[aria-current="true"]::before {
+  height: 2px;
+  background: var(--fg);
+}
+
+/* Revealed leftwards, away from the text: the gutter is the only space the
+   label can take without ever overlapping the column. It fades in on approach
+   rather than on a precise hover, which is the whole point of the proximity
+   read: the nearest entry names itself before the pointer arrives. */
+.article-minimap a.dash span {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 10px);
+  padding: 2px 6px;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  opacity: clamp(0, calc((var(--proximity) - 0.85) * 6.7), 1);
+  pointer-events: none;
+}
+
+.article-minimap a.dash:hover span,
+.article-minimap a.dash:focus-visible span {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-minimap .dash,
+  .article-minimap a.dash span {
+    transition: none;
+  }
+}
+
+/* Room for the measure, the gutter and the dashes, and never below the 1024px
+   viewport.
+
+   Fixed rather than sticky for two reasons: it is centred on the window itself
+   rather than on a slice of the article, and the shell scrolls an inner
+   container, which clips its own overflow. Sticky inside that container would
+   cut every label that runs longer than the gutter.
+
+   The shell keeps its two rails and its padding symmetric, so the text column
+   is centred on the viewport and `50vw` is the same anchor the grid uses. */
+@media (min-width: 1024px) {
+  @container article (min-width: 662px) {
+    .article-minimap {
+      display: block;
+      position: fixed;
+      top: 50%;
+      right: calc(50vw + var(--article-measure) / 2 + var(--minimap-gutter));
+      z-index: 20;
+      transform: translateY(-50%);
+    }
+
+    /* The two are mutually exclusive by construction, which is what keeps a
+       single table of contents landmark in the accessibility tree. */
+    .article-toc {
+      display: none;
+    }
+  }
+}
+
+/* Wherever the margin is too narrow for the minimap, the same structure is
+   served above the text as a disclosure. `details` opens on its own, so this
+   regime costs no client JavaScript and survives scripting being off. */
+.article-toc {
+  margin-top: var(--article-rhythm);
+  border: 1px solid var(--line);
+}
+
+.article-toc summary {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  color: var(--fg);
+  font-size: 13px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.article-toc summary::-webkit-details-marker {
+  display: none;
+}
+
+.article-toc summary::after {
+  content: "+";
+  color: var(--fg-faint);
+}
+
+.article-toc[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.article-toc[open] summary::after {
+  content: "−";
+}
+
+.article-toc ol {
+  margin: 0;
+  padding: 10px 14px;
+  list-style: none;
+}
+
+.article-toc li[data-depth="3"] {
+  padding-left: 16px;
+}
+
+.article-toc a {
+  display: block;
+  padding: 3px 0;
+  color: var(--fg-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.article-toc a:hover {
+  color: var(--fg);
+}
+
+.article-body {
+  max-width: var(--article-measure);
+  color: var(--fg);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.625;
+  letter-spacing: -0.01em;
+}
+
+.article-body > :first-child {
+  margin-top: 0;
+}
+
+.article-body > :last-child {
+  margin-bottom: 0;
+}
+
+.article-body p {
+  margin: 0 0 var(--article-rhythm);
+}
+
+/* Hierarchy is carried by size, weight and the space above a heading, never by
+   a grid rule: with grid mode off the sections still read as sections. */
+.article-body h2 {
+  margin: calc(var(--article-rhythm) * 3) 0 var(--article-rhythm);
+  color: var(--fg);
+  font-size: 22px;
+  line-height: var(--article-rhythm);
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  scroll-margin-top: 96px;
+}
+
+.article-body h3 {
+  margin: calc(var(--article-rhythm) * 2) 0 var(--article-rhythm);
+  color: var(--fg);
+  font-size: 17px;
+  line-height: var(--article-rhythm);
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  scroll-margin-top: 96px;
+}
+
+/* Tailwind preflight strips list markers globally, so long-form has to ask for
+   them back explicitly. */
+.article-body ul {
+  margin: 0 0 var(--article-rhythm);
+  padding-left: 22px;
+  list-style: disc;
+}
+
+.article-body ol {
+  margin: 0 0 var(--article-rhythm);
+  padding-left: 22px;
+  list-style: decimal;
+}
+
+.article-body li {
+  margin: 0;
+}
+
+.article-body li::marker {
+  color: var(--fg-faint);
+}
+
+.article-body blockquote {
+  margin: calc(var(--article-rhythm) * 2) 0;
+  padding-left: 20px;
+  border-left: 2px solid var(--line);
+  color: var(--fg-muted);
+}
+
+.article-body hr {
+  margin: calc(var(--article-rhythm) * 3) 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.article-body a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+}
+
+.article-body a:hover {
+  text-decoration-color: var(--fg-muted);
+}
+
+.article-body strong {
+  color: var(--fg);
+  font-weight: 650;
+}
+
+.article-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+.article-body :not(pre) > code {
+  padding: 0.1em 0.34em;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-family: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
+  font-size: 0.875em;
+}
+
+/* GFM tables are not available: enabling them would mean a remark plugin, a
+   second production dependency and an edit to `next.config.ts`, all three of
+   which the PRD rules out. Tables are authored as `<Table>` instead, and the
+   wrapper that component supplies is the scroll container, so the table keeps
+   `display: table` and with it the row and cell semantics that moving the
+   overflow onto the table itself would have cost. */
+.article-table {
+  margin: calc(var(--article-rhythm) * 2) 0;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.article-body table {
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* Cells held on one line are what makes a wide table exceed the wrapper and
+   scroll inside it rather than wrapping down to the measure. */
+.article-body th,
+.article-body td {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  text-align: left;
+  white-space: nowrap;
+  font-weight: inherit;
+}
+
+.article-body th {
+  background: var(--surface);
+  color: var(--fg);
+  font-weight: 620;
+}
+
+/* The frame belongs to the design system, not to the Shiki theme: the surface
+   token supplies the background so both themes stay on the site palette. */
+.article-code {
+  margin: calc(var(--article-rhythm) * 2) 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.article-code pre {
+  margin: 0;
+  padding: 20px;
+  overflow-x: auto;
+  background: transparent;
+  font-family: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
+  font-size: 14px;
+  line-height: var(--article-rhythm);
+  tab-size: 2;
+}
+
+.article-code pre code {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* Shiki runs with `defaultColor: false`, so every token carries both palettes
+   as custom properties and the theme switch is a CSS selector, not a re-render
+   and not a single byte of client JavaScript. */
+.article-code .shiki,
+.article-code .shiki span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
+.dark .article-code .shiki,
+.dark .article-code .shiki span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+
 .rainbow-text {
   background-image: linear-gradient(
     100deg,
