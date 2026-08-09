@@ -3,7 +3,7 @@ export const siteConfig = {
   name: "Arthur Jean",
   company: "StriveX",
   handle: "arthurjean.com",
-  role: "Solo Indie Maker",
+  role: "Indie Maker",
   pitch: "I build developer tools for the new way of coding.",
   location: "Remote · France",
   available: true,
@@ -11,7 +11,7 @@ export const siteConfig = {
   locale: "en_US",
   title: "Arthur Jean | Developer tools for AI coding agents",
   description:
-    "Solo Indie Maker building dev tools, coding agent workflows, open-source software, and products for the new way of coding.",
+    "Indie Maker building dev tools, coding agent workflows, open-source software, and products for the new way of coding.",
   url: "https://arthurjean.com",
   ogImage: "/og-image.png",
   ogImageAlt:
@@ -141,16 +141,14 @@ export const projects: Project[] = [
   },
   {
     title: "Rust Doctor",
-    description:
-      "The one-command health check for your Rust project. rust-doctor scans for security, performance, correctness, architecture, and dependency issues, then folds everything into a single 0–100 score with diagnostics you can act on.",
+    description: "Your agent writes bad Rust. This catches it.",
     tags: ["Dev Tool", "Rust", "MCP"],
     url: "https://rust-doctor.vercel.app",
     meta: "2025, Open source",
   },
   {
     title: "Mistral Vibe RS",
-    description:
-      "Independent, from-scratch Rust implementation of the Mistral Vibe coding agent, chasing full parity with the upstream CLI, terminal interface, agent runtime, tools, and ACP surface.",
+    description: "Mistral's coding agent, rebuilt from scratch in Rust.",
     tags: ["CLI", "Rust", "AI Agents"],
     url: "https://github.com/arthjean/mistral-vibe-rs",
     meta: "2026, Open source",
@@ -158,15 +156,14 @@ export const projects: Project[] = [
   {
     title: "Pyxis",
     description:
-      "Multi-provider Rust CLI for fast agentic coding workflows, designed to connect natively with Paneflow.",
+      "Codex CLI is the best agent harness, but it's locked to OpenAI. Pyxis won't be.",
     tags: ["CLI", "Rust", "AI Agents"],
     url: "https://github.com/arthjean/pyxis",
     meta: "2026, Open source",
   },
   {
     title: "Distill",
-    description:
-      "Distill is an open-source MCP server that compresses context at the source.",
+    description: "Your agent wastes context. Distill fixes it.",
     tags: ["Dev Tool", "MCP", "TypeScript"],
     url: "https://distill-mcp.com",
     meta: "2025, Open source",
@@ -174,7 +171,7 @@ export const projects: Project[] = [
   {
     title: "NZXT Control Linux",
     description:
-      "Native Rust and GPUI desktop app to monitor and control NZXT Kraken and RGB hardware on Linux. Local only, with no account, cloud, or browser runtime. Unofficial.",
+      "Native Linux control for NZXT Kraken and RGB hardware. Rust and GPUI, local-only, no browser runtime. Unofficial.",
     tags: ["Desktop App", "Rust", "Linux"],
     url: "https://github.com/arthjean/nzxt-control-linux",
     meta: "2026, Open source",
@@ -182,7 +179,7 @@ export const projects: Project[] = [
   {
     title: "OpenbookLM",
     description:
-      "Multi-LLM alternative to NotebookLM: document ingestion, hybrid retrieval with reranking, and grounded chat that cites every source. Rust and Axum backend, Next.js client, Apache-2.0 core.",
+      "OpenbookLM core: RAG and multi-LLM document chat with citations. Self-hostable, Apache-2.0.",
     tags: ["RAG", "Rust", "Next.js"],
     url: "https://github.com/arthjean/openbooklm-core",
     meta: "2026, Open core",
@@ -319,10 +316,10 @@ export const experiences: Experience[] = [
     location: "Nantes, France",
     roles: [
       {
-        title: "Founder & Software Engineer",
+        title: "Founder & Creator & Software Engineer",
         contract: "Full-time",
-        period: "07.2025 – Present",
-        duration: "1 yr 2 mos",
+        period: "11.2024 – Present",
+        duration: "1 yr 10 mos",
         setup: "Remote",
         highlights: [
           "Paneflow: a native Rust and GPUI workspace for coding agents, shipped on Linux, macOS, and Windows.",
@@ -341,8 +338,8 @@ export const experiences: Experience[] = [
       {
         title: "Full Stack Software Engineer",
         contract: "Fixed-term",
-        period: "07.2024 – 06.2025",
-        duration: "1 yr",
+        period: "03.2023 – 06.2025",
+        duration: "2 yrs 4 mos",
         setup: "On-site",
         highlights: [
           "Sole developer on the team, from architecture through production.",
