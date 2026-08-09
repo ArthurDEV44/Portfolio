@@ -18,7 +18,7 @@
   --neutral-ink: oklch(0.205 0 0);
 
   /* Navy anchors reused by the dark ramp below. */
-  --navy-ink: oklch(0.2234 0.0779 267.9);
+  --navy-ink: oklch(0.19 0.06 268);
   --navy-canvas: oklch(0.9439 0.0077 48.7);
   --navy-raised: oklch(0.8249 0.0343 300.8);
   --navy-hairline: oklch(0.7377 0.0402 291.9);
