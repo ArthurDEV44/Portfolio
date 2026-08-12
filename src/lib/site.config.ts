@@ -154,6 +154,14 @@ export const projects: Project[] = [
     meta: "2026, Open source",
   },
   {
+    title: "Kori",
+    description:
+      "Native Linux control for NZXT Kraken and RGB hardware. Rust and GPUI, local-only, no browser runtime. Unofficial.",
+    tags: ["Desktop App", "Rust", "Linux"],
+    url: "https://github.com/arthjean/kori",
+    meta: "2026, Open source",
+  },
+  {
     title: "Pyxis",
     description:
       "Codex CLI is the best agent harness, but it's locked to OpenAI. Pyxis won't be.",
@@ -167,14 +175,6 @@ export const projects: Project[] = [
     tags: ["Dev Tool", "MCP", "TypeScript"],
     url: "https://distill-mcp.com",
     meta: "2025, Open source",
-  },
-  {
-    title: "NZXT Control Linux",
-    description:
-      "Native Linux control for NZXT Kraken and RGB hardware. Rust and GPUI, local-only, no browser runtime. Unofficial.",
-    tags: ["Desktop App", "Rust", "Linux"],
-    url: "https://github.com/arthjean/nzxt-control-linux",
-    meta: "2026, Open source",
   },
   {
     title: "OpenbookLM",
