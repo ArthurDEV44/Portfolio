@@ -1,0 +1,158 @@
+export const meta = {
+  title: "The Right Time to Lose Context",
+  description:
+    "Why widening the window is the wrong instinct, and why compacting early beats compacting late.",
+  publishedAt: "2026-08-20",
+  tags: ["context-engineering", "claude-code", "caching", "compaction"],
+};
+
+A context window reads like a fuel gauge: a million tokens to start with, 340K
+burned, 660K still in the tank. You take it in at a glance, and that is
+exactly the problem. It points to one decision and only one, every single
+time: there's room left, so I've got slack.
+
+Matt Pocock gave this decline the name that spread through the ecosystem: the
+**smart zone**. Early in a session, the agent is sharp. It finishes what it
+started, it remembers the constraint you gave it three turns ago, it doesn't
+reinvent a function it already wrote. Then the quality falls off a cliff. It
+cuts corners, it forgets instructions, it makes more and more mistakes. It has
+entered the **dumb zone**. In May 2026, he put that tipping point at around
+120K tokens: "around by the 120 token mark, I start to feel like I'm in the
+dumb zone." The model he was using had a one-million-token window: the
+drop-off hit at 12 percent full.
+
+Anthropic's Applied AI team calls it **context rot**: performance degrades as
+context grows longer, regardless of how good the content is. Hence their
+definition of context engineering: curating and maintaining the optimal set of
+tokens during inference, which means keeping the smallest set of high-signal
+tokens that gets you the result you want, not the most exhaustive one.
+
+## What compacting actually means
+
+Compacting is no longer a flaky harness feature. It has become a full
+subsystem, with its own triggers, metrics, and fallback paths. The harness,
+here, is the program wrapped around the model that decides what goes into the
+prompt on every turn.
+
+Codex is the most verifiable case, because its code is public. The harness
+pauses the turn, has the conversation summarized, then starts over on a fresh
+history that it rebuilds: project instructions, environment, repo state, then
+the summary. Everything else, the files it reread, the listings, the piles of
+command output, drops out of the prompt without the agent losing track of
+where it is.
+
+The ordering is not arbitrary. A comment in the code notes that the model is
+trained to see the summary in last position. Compacting is therefore part of
+what the model knows how to do, in the same way calling a tool is.
+
+The rest is about reliability. Hook points let you run your own scripts right
+before and right after, and three separate summarization implementations take
+over from one another if the first one fails. Codex treats compaction as an
+operation that is not allowed to fail.
+
+The most interesting part is what Codex counts to decide it's time to compact.
+The threshold is 90 percent of the window, but the measurement you apply it to
+is configurable. `Total` counts everything sent to the model, including the
+stable prefix that every new window picks back up: project instructions,
+environment, repo state, summary. `BodyAfterPrefix` counts only what has piled
+up on top of that prefix since the last compaction. The first watches the size
+of the prompt, the second watches its growth. That's the difference between a
+storage budget and an attention budget, written into an `enum`.
+
+The DeepSeek harness (`dsh`), also open source, comes at the problem from the
+other end. It keeps two distinct things: on one side the session journal,
+which records everything and is never truncated; on the other the prompt sent
+to the model, which is only a view onto it. So compacting deletes nothing: the
+summary hides part of the journal in that view while the original messages
+stay on disk. You can always go back and look at what the summary replaced.
+
+The trigger fires when the prompt hits 80 percent of the window. `dsh` then
+summarizes the beginning of the conversation and leaves the last sixth
+untouched, the part holding the work in progress. The cut follows a strict
+rule: never separate a tool call from its result, or you leave the model with
+a question and no answer.
+
+But before asking for a summary, `dsh` tries something free. It truncates the
+biggest tool outputs, keeping the head and tail of each one and cutting the
+middle, then remeasures the prompt. If that's enough to get back under the
+threshold, no summary is requested. The compaction that's least risky for
+quality is also the cheapest: the one that doesn't call a model at all.
+
+Claude Code very likely does just as well, but its code is closed: you can
+only judge it by its effects.
+
+## Compacting before the limit
+
+The point of all this detail is simple. A million-token window left full gives
+the model exactly one thing: everything, flat, including the forty stale tool
+outputs. A harness that compacts gives it a reconstructed state: the clean
+prefix, the decisions made, the dead ends ruled out, the recent tail intact.
+The first maximizes storage, the second maximizes attention.
+
+What scares people about compaction is this: one more model call, one more
+line on the bill. The API is stateless, so on every turn the entire
+accumulated context goes back out and gets billed again. On Opus 5, at August
+2026 pricing, a turn with 800K tokens read from cache costs 40 cents before
+the first line of the response. Compacting costs a dollar, once: 63 cents to
+summarize 125K tokens, 37 to re-cache the context now down to 60K. Every turn
+after that drops to three cents. Twenty turns later, $8 without compaction
+against $1.60 with. The summary runs about 50 cents on GPT-5.6 Sol, and ten
+times less on either model if the context is already cached. Without
+compaction you also have to count the extra turns, since the top of the window
+is precisely where the agent cuts corners and redoes work.
+
+## The takeaway
+
+The first setting to touch is the automatic compaction threshold. Defaults sit
+around 80 or 90 percent of the window, which made sense when a window was 200K
+and stops making sense at a million, where compaction fires around 900K, seven
+times later than the 120K mark. Bring it down, and tune it to what you
+actually observe in your own sessions: the point on the gauge where the agent
+starts forgetting instructions and redoing work it already did.
+
+The bill is the most visible reason to change the setting, and it would be
+reason enough on its own: the API is stateless, so everything you leave in the
+window gets billed again on every turn. It still isn't the main reason.
+Everything above says the same thing: a compacted context hands the model a
+reconstructed state instead of a pile, and the agent is the one that benefits.
+Fewer forgotten instructions, less redone work, fewer turns to get to the same
+place.
+
+That leaves the methodological point. You can use an agent for months without
+ever knowing what its harness does with the conversation between two turns.
+Doing AI engineering starts exactly there: understanding each piece, what it
+decides, when it fires, and what it costs. Compaction is one of those pieces,
+and one of the few whose setting is entirely in your hands: one threshold to
+lower, and the agent works better starting with your next session.
+
+## With every new model
+
+None of the above is an invariant. The dumb zone boundary has already moved
+out, and it will move again. Windows keep getting wider, default thresholds
+shift, cache mechanics change from one version to the next. An article written
+on this subject in 2025 is wrong today on half its recommendations, and this
+one will age the same way.
+
+What doesn't move is the shape of the reasoning. Context is an attention
+budget, not a storage budget. The cache is an exact prefix, not an object
+cache. Compacting summarizes and editing erases, and those are not the same
+gesture. And maximum capacity is never the optimal setting, not for effort,
+not for the window.
+
+So it all comes down to the moment you pick to hand back control, the one
+number the gauge will never show you.
+
+---
+
+Thanks for reading all the way through. For that, here's my Claude
+configuration:
+[github.com/arthjean/claude-config](https://github.com/arthjean/claude-config),
+and my Codex configuration:
+[github.com/arthjean/codex-config-public](https://github.com/arthjean/codex-config-public).
+
+You can also download all the skills I use, including a few I wrote myself:
+
+<CopyCommand command="bunx skills add arthjean/skills" />
+
+The repository is here:
+[github.com/arthjean/skills](https://github.com/arthjean/skills).
