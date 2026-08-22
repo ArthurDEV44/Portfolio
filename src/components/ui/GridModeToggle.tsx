@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "grid-mode";
 const SYNC_EVENT = "grid-mode-change";
@@ -9,27 +9,35 @@ function apply(enabled: boolean) {
   document.documentElement.dataset.grid = enabled ? "on" : "off";
 }
 
+/* Both rail and mobile instances read the same stored value and are woken by
+   the same event, so neither can hold a stale copy of the other's state. */
+function subscribe(onChange: () => void): () => void {
+  window.addEventListener(SYNC_EVENT, onChange);
+  return () => window.removeEventListener(SYNC_EVENT, onChange);
+}
+
+function getSnapshot(): boolean {
+  return localStorage.getItem(STORAGE_KEY) !== "off";
+}
+
+function getServerSnapshot(): boolean {
+  return true;
+}
+
 export function GridModeToggle() {
-  const [enabled, setEnabled] = useState(true);
+  const enabled = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
-  // Both rail and mobile instances stay in sync through a shared event.
   useEffect(() => {
-    const initial = localStorage.getItem(STORAGE_KEY) !== "off";
-    setEnabled(initial);
-    apply(initial);
-
-    const onSync = (event: Event) => {
-      setEnabled((event as CustomEvent<boolean>).detail);
-    };
-    window.addEventListener(SYNC_EVENT, onSync);
-    return () => window.removeEventListener(SYNC_EVENT, onSync);
-  }, []);
+    apply(enabled);
+  }, [enabled]);
 
   const toggle = () => {
-    const next = !enabled;
-    localStorage.setItem(STORAGE_KEY, next ? "on" : "off");
-    apply(next);
-    window.dispatchEvent(new CustomEvent(SYNC_EVENT, { detail: next }));
+    localStorage.setItem(STORAGE_KEY, enabled ? "off" : "on");
+    window.dispatchEvent(new Event(SYNC_EVENT));
   };
 
   return (

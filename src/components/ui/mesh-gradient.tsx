@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 import { Gradient } from "@/lib/gradient";
 import { cn } from "@/lib/utils";
@@ -20,6 +20,23 @@ interface MeshGradientProps {
   seed?: number;
   darkenTop?: boolean;
   className?: string;
+}
+
+/* Probing costs a throwaway canvas and the answer cannot change for the life of
+   the document, so it is read once and every later render reuses it. React
+   reads this snapshot during render and needs it to keep a stable value. */
+let webGLSupport: boolean | null = null;
+
+const noSubscribe = () => () => {};
+
+function getWebGLSnapshot(): boolean {
+  webGLSupport ??= isWebGLSupported();
+  return webGLSupport;
+}
+
+/* The server cannot probe, and the canvas is what the markup ships with. */
+function assumeWebGL(): boolean {
+  return true;
 }
 
 const isWebGLSupported = (): boolean => {
@@ -44,11 +61,11 @@ export function MeshGradient({
 }: MeshGradientProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gradientRef = useRef<Gradient | null>(null);
-  const [webGLSupported, setWebGLSupported] = useState(true);
-
-  useEffect(() => {
-    setWebGLSupported(isWebGLSupported());
-  }, []);
+  const webGLSupported = useSyncExternalStore(
+    noSubscribe,
+    getWebGLSnapshot,
+    assumeWebGL,
+  );
 
   useEffect(() => {
     if (!canvasRef.current || !webGLSupported) return;

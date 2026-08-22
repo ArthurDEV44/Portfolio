@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 import type { TocEntry } from "@/lib/blog";
 
@@ -53,20 +60,37 @@ function marksFromDom(): Mark[] | null {
   return marks;
 }
 
+const noSubscribe = () => () => {};
+
+/* The rendered body does not change under the component, so the DOM stack is
+   read once per article and cached: React reads this snapshot during render and
+   needs it to keep a stable identity. Keying the cache on the table of contents
+   drops it as soon as a different article is described. */
+function useDocumentMarks(fallback: Mark[]): Mark[] {
+  const cache = useRef<{ key: Mark[]; value: Mark[] } | null>(null);
+
+  const getSnapshot = useCallback((): Mark[] => {
+    if (cache.current?.key !== fallback) {
+      cache.current = { key: fallback, value: marksFromDom() ?? fallback };
+    }
+    return cache.current.value;
+  }, [fallback]);
+
+  const getServerSnapshot = useCallback(() => fallback, [fallback]);
+
+  return useSyncExternalStore(noSubscribe, getSnapshot, getServerSnapshot);
+}
+
 /* Long marks for sections, shorter for subsections, short for body blocks, so
    the stack reads as the rhythm of the document rather than as a list. Headings
    are anchors carrying their text and are server rendered, which keeps the
    structure navigable by keyboard and by screen reader with no script at all.
    Body marks are decoration and are hidden from assistive technology. */
 export function ArticleMinimap({ entries }: { entries: TocEntry[] }) {
-  const [marks, setMarks] = useState<Mark[]>(() => marksFromToc(entries));
+  const tocMarks = useMemo(() => marksFromToc(entries), [entries]);
+  const marks = useDocumentMarks(tocMarks);
   const [activeId, setActiveId] = useState<string | null>(null);
   const listRef = useRef<HTMLOListElement>(null);
-
-  useEffect(() => {
-    const full = marksFromDom();
-    if (full) setMarks(full);
-  }, [entries]);
 
   useEffect(() => {
     const list = listRef.current;
@@ -181,7 +205,9 @@ export function ArticleMinimap({ entries }: { entries: TocEntry[] }) {
       document.removeEventListener("pointerleave", clear);
       clear();
     };
-  }, [marks]);
+    /* The dashes are re-queried on every frame, so the listeners never need
+       re-attaching when the stack changes. */
+  }, []);
 
   return (
     <nav aria-label="Table of contents" className="article-minimap">
