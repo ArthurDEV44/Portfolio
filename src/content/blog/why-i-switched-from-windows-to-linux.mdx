@@ -1,0 +1,317 @@
+export const meta = {
+  title: "Why I Switched from Windows to Linux",
+  description:
+    "Shell startup, sandboxing primitives and telemetry: why an agent-driven workflow made Windows the bottleneck and Fedora the fix.",
+  publishedAt: "2026-08-25",
+  tags: ["linux", "fedora", "agents", "developer-experience"],
+};
+
+In this article I'm not going to talk about macOS, because it's a very good
+OS and it's close enough to Linux anyway. I want to tell you about my move
+from Windows to Linux (Fedora Linux) as a developer who works with coding
+agents: why AI agents are so much better on Linux than on Windows, why I
+made the switch, what I got out of it, and how the two compare technically
+and in day-to-day use.
+
+The first reason I ended up on Linux is speed. PowerShell is, in my
+opinion, the worst-designed terminal engine out there, at least for AI and
+for a developer in 2026. Every command is slow. I'll come back to this
+later in the article, because it's the clearest example of just how
+obsolete Windows' approach has become next to Linux.
+
+The second reason is that Windows is not a fast, lightweight OS. You'll
+tell me Linux is heavy too, and you're right about disk footprint, but what
+I mean by lightweight is something else. I'll explain further down.
+
+And finally, Windows is a paid, locked-down OS. You can do what Microsoft
+allows. On Linux you can do what you can think of: everything is open,
+configurable, customizable, and at a depth that's hard to overstate.
+Windows is proprietary. Linux lets you make the OS yours.
+
+## The terminal, the example that sums up everything else
+
+I promised I'd come back to PowerShell. Here's why it's the perfect example.
+
+On my Fedora machine, I timed shell startup. `bash -c 'exit'`, repeated two
+hundred times: 1.05 milliseconds per launch. `zsh`: 1.21 ms. A `fork` +
+`exec` of a trivial binary: 0.60 ms. A `git status --porcelain`: 2 ms on a
+small repo, 6.8 ms on a repo with seven hundred files.
+
+On the PowerShell side, the numbers reported in the project's official
+issue (PowerShell/PowerShell#6443) are 233.7 ms for `powershell.exe` and
+540.0 ms for `pwsh`, the Core version. That's not my machine, so don't take
+the comparison literally. But we're not talking about a 20% gap here, we're
+talking about two orders of magnitude. And the problem has been known for
+years: another issue, #17734 "Slow startup of Powershell Core", was opened
+and then closed without anything fundamental changing. One optimization
+attempt did land on Microsoft's side, PR #8341 "Improve powershell startup
+time", merged in December 2018: it brought startup down from 540.5 ms to
+408.3 ms, a 24.5% improvement. Still two orders of magnitude away from a
+POSIX shell.
+
+Now, the fundamentals. This isn't laziness, it's architectural.
+
+Windows has no `fork()`. It only has `CreateProcess`, a single call that
+builds the entire process in one shot. The Git for Windows project
+documents this explicitly: POSIX tools that rely on `fork` + `exec` have to
+go through a significantly slower emulation layer. On Linux, `fork()`
+copies nothing. It marks the pages copy-on-write and returns. That's why I
+measure 0.60 ms where Windows has to load the loader, resolve DLLs, spin up
+the CLR for PowerShell, and notify every component listening for process
+creation along the way.
+
+An independent benchmark on identical hardware (Bits'n'Bites, "Benchmarking
+OS primitives") measured, back in June 2017, Linux more than 20 times
+faster than Windows at launching a full program, roughly 3 times faster at
+thread creation, and up to a thousand times faster at file creation between
+the best Linux configuration and the worst Windows one, the latter running
+a third-party antivirus. The benchmark is nine years old, so take it for
+what it is: an order of magnitude, not a measurement of today. The damning
+detail is elsewhere, in the methodology: to get his best Windows numbers,
+the author had to disable Windows Defender and search indexing.
+
+That detail isn't a footnote, it's the heart of the problem. On Windows,
+every process launched, every file opened, every write goes through a stack
+of filter drivers: real-time Defender, AMSI, indexing, plus whatever your
+company has piled on top. Microsoft admits it in its own way: they ship a
+"Performance analyzer for Microsoft Defender Antivirus" whose entire
+purpose is to tell you which files and which processes consume the most
+scan time. You don't ship a diagnostic tool for a cost that doesn't exist.
+
+Bruce Dawson, a Google engineer and Microsoft alumnus, documented an even
+more telling case: a quadratic algorithm inside `CreateProcess` (updating
+the Control Flow Guard bitmap) that made performance collapse depending on
+address space fragmentation. In his repro case, disabling CFG made
+`CreateProcess` about twenty times faster.
+
+And if you're thinking "sure, but I use WSL", Microsoft itself has the
+answer. The official documentation for setting up a dev environment on WSL
+recommends storing your files in the Linux file system, because
+cross-access through `/mnt/*` "can significantly slow performance".
+Independent measurements from vxlabs put numbers on it: host files are
+roughly 5 times slower to process under WSL 2 than under WSL 1, a `yarn
+build` is 5.8 times slower, and a `du` walking a hundred thousand files,
+which is pure metadata access, ranges from 14 to 31 times slower. The
+reason is that `/mnt/c` speaks the 9p protocol, a network file system
+protocol, across the VM/host boundary. Every `open`, every `stat` is a
+round trip. A virtiofs transport has since appeared, enabled through
+`.wslconfig`, but 9p is still the default. So your choice is to work in
+NTFS and pay the network tax, or work in ext4 and not really be on Windows
+anymore.
+
+## Why coding agents are better on Linux
+
+This is where everything above stops being a comfort question and becomes a
+measurable productivity question.
+
+A coding agent doesn't do one big operation, it does hundreds of small
+ones. It lists files, it greps, it runs a test, it reads the output, it
+runs it again. The agent loop is a process-creation machine. That's exactly
+the worst case for Windows and the best case for a POSIX kernel.
+
+Do the math yourself. Two hundred commands in a session, which is a normal
+session, not an extreme one. At 400 ms of shell startup, you lose 80
+seconds of pure waiting. At 1 ms, you lose 0.2 seconds. That latency
+doesn't show up in a benchmark, it shows up in the fact that the agent
+looks like it's thinking when it's really just waiting on its shell.
+
+Add POSIX chaining. `rg --files-with-matches 'pattern' | xargs sed -i` is
+one line. The agent writes it in a single pass, the shell understands it,
+done. The PowerShell equivalent exists, but it's more verbose, objects
+replace text, and models have seen vastly more POSIX shell than PowerShell
+in training. An agent is best where it has read the most.
+
+But the real argument, the one that settled it for me, is sandboxing.
+
+In May 2026, OpenAI published an engineering post about building their
+Codex sandbox for Windows. The sentence worth remembering is theirs, not
+mine: "Windows does not provide a single primitive that cleanly maps to a
+safe execution environment for agentic workloads." The post explains that
+when the author joined the team, Codex for Windows simply had no sandbox
+implementation at all: Windows users had to choose between approving nearly
+every command, or enabling a "Full Access" mode with no restrictions
+whatsoever. The final solution rests on restricted tokens, synthetic SIDs,
+dedicated sandbox users, and firewall rules, an architecture built entirely
+by hand.
+
+On Linux, there's nothing to build. Codex today relies on bubblewrap, which
+stacks namespaces, `PR_SET_NO_NEW_PRIVS`, and a seccomp filter. Landlock, a
+kernel security module, remains available as a legacy fallback path. On
+macOS, it's Seatbelt. In both cases, these are primitives already present
+in the system, directly usable.
+
+I checked on my own machine: `CONFIG_SECURITY_LANDLOCK=y`,
+`CONFIG_SECCOMP=y`, `CONFIG_USER_NS=y`, bubblewrap 0.11 installed, SELinux
+in Enforcing mode, podman 5.8.4. It's all there by default, nothing to
+install.
+
+On the Claude Code side, Anthropic's documentation is just as blunt: "The
+sandbox is built into Claude Code and runs on macOS, Linux, and WSL2.
+Native Windows is not supported." The sandbox runs on macOS, Linux, and WSL
+2, not on native Windows and not on WSL 1. On native Windows, Claude Code
+falls back to Git Bash if Git for Windows is installed, and otherwise runs
+commands through its PowerShell tool.
+
+Translate that into practice. On Linux, I can let an agent work with broad
+permissions because the kernel, not the agent, guarantees it won't step
+outside its perimeter. On native Windows, either I approve every command
+and become the bottleneck again, or I hand over full power and trust.
+Neither option is acceptable when you're working seriously with agents.
+
+One last point: containers. On Linux, a container is namespaces and
+cgroups, two kernel features you're already running. There's no virtual
+machine. On Windows, Docker Desktop runs a Linux VM, with its reserved
+memory, its own file system, and the boundary crossing mentioned above the
+moment you mount a volume from the host. Your devcontainers aren't less
+convenient on Windows, they're just heavier, every single run.
+
+## What I mean by "lightweight"
+
+I told you I wasn't talking about disk footprint. My Fedora install takes
+up hundreds of gigabytes and counts nearly three thousand packages. On that
+front, I have nothing to sell you.
+
+What I call lightweight is the amount of stuff running that I never asked
+for.
+
+On my machine, 48 systemd services are running. I can name every one of
+them, I can disable every one of them, and the OS will keep working while
+letting me live with the consequences. Nothing is watching my activity to
+report it elsewhere. Nothing is reserving CPU for a feature I don't use.
+
+On Windows 11, telemetry has three levels documented by Microsoft: Off,
+Required, and Optional. The Required level, the one that sends device
+information, app compatibility data, and Store data, cannot be fully
+disabled on Home or Pro editions: full opt-out is reserved for Windows
+Server, Enterprise, and Education. That's written in their own
+documentation. The Start menu has a "Recommended" section that surfaces
+promoted Store apps, picked by Microsoft from a limited set of developers,
+disableable, but on by default. Recall, on Copilot+ PCs, takes snapshots of
+your screen, with local processing and TPM encryption, opt-in, but present.
+
+None of these things is a scandal on its own. The point is elsewhere: these
+are decisions someone else made for me, on my machine, and that I can only
+soften, never remove.
+
+I have to be honest about one thing: I couldn't find a recent, independent,
+reproducible benchmark comparing idle memory usage between Windows 11 and
+Fedora Workstation on identical hardware. The numbers floating around come
+from forums and unverifiable screenshots. So I'm not going to quote any.
+The difference I see day to day is real to me, but I have no solid source
+to put in front of you, and a feeling isn't a measurement.
+
+## Paid and frozen, versus free and malleable
+
+Windows 11 Home costs $139.99 as a retail license, Pro $199.99. Fedora
+Workstation costs nothing, and the current release as I write this, Fedora
+Linux 44, shipped on April 28, 2026 with GNOME 50. The X.org session had
+already disappeared in Fedora 43: on my machine only Xwayland is left.
+
+But the purchase price isn't the real issue. The real issue is what
+happened on October 14, 2025: the end of support for Windows 10. To keep
+receiving security updates, consumers had to go through the ESU program,
+free by syncing their settings via Windows Backup, or for 1,000 Microsoft
+Rewards points, or for $30. Microsoft extended the consumer track in June
+2026: it now runs through October 12, 2027. For businesses, it's $61 per
+seat the first year, then $122, then $244, an annual doubling that isn't a
+pricing mistake but an eviction strategy.
+
+And to move to Windows 11 you need TPM 2.0, Secure Boot enabled, UEFI, and
+a CPU on an approved compatibility list. Perfectly functional machines were
+declared ineligible.
+
+That's where the difference in kind shows up. On Windows, you're a tenant.
+You do what the vendor allows, for as long as the vendor decides, on the
+hardware the vendor approves.
+
+On Fedora, my setup looks like me because I built it. My window manager, my
+shortcuts, my dotfiles versioned in a Git repo, my shell, my services. If a
+machine dies, I reinstall and clone. Nothing is buried in a registry or in
+a checkbox on a settings panel that will have moved by the next major
+update. It's all text, all versionable, all reproducible.
+
+And that property has a side effect I hadn't anticipated: it's also what
+makes an agent effective. An agent knows how to read and edit a text config
+file. It doesn't know how to click in a GUI. A system where everything is
+text is a system an AI can actually administer.
+
+## What the numbers say
+
+I'm not going to tell you Linux won the desktop. According to StatCounter,
+in July 2026 the worldwide desktop split was still Windows at 71.18%, macOS
+at 7.61%, and Linux at 7.53%. Watch out for the trap I almost fell into:
+StatCounter counts a separate "OS X" line at 12.21%, which puts Apple's
+total near 20%. No, Linux did not pass macOS, it's still behind even on the
+"macOS" line alone. And Windows still holds more than seven machines out of
+ten.
+
+While we're here, if you saw articles in July 2026 announcing Windows below
+60% and Linux around 20%, forget them. Here's what actually happened: in
+June 2026, StatCounter showed Windows at 56.55% and an "Unknown" category
+at 21.45%, inflated by misclassified user agents. Linux was at 4.39%. Some
+sites attributed the "Unknown" block to Linux. After correction, Windows
+was back around 72%.
+
+On Steam, Linux hit a record 5.33% in March 2026, then fell back to 4.52%
+in April, 3.99% in May, 3.69% in June, and climbed back to 4.01% in July.
+The March peak looks more like a survey anomaly than a shift. The
+underlying trend is still clear: we came from 3.05% in October 2025.
+
+Among developers, the Stack Overflow 2025 survey, published in late July
+2025, gives Windows 56.7% for personal use and 49.5% for professional use,
+macOS around 32.9% professionally, Ubuntu at 27.8% personal and 27.7%
+professional, and WSL at 15.9% personal and 16.8% professional. The 2026
+edition opened on June 23, 2026, but the results aren't out yet as I write
+this.
+
+What I read in these numbers isn't a shift. It's that Linux is already the
+majority where code runs, and the minority where code is typed. The WSL
+percentage is the most revealing of all: these are developers who have
+already decided they want a Linux kernel, but haven't taken the step of
+leaving Windows. I was exactly there for years.
+
+## What it cost me
+
+An article like this that only covered the wins would be advertising, not a
+field report.
+
+Plenty of apps don't exist on Linux, and the alternatives often aren't
+equivalent. That's a fact. Some multiplayer games with kernel-level
+anticheat will never run, no matter how far Proton comes. Microsoft Office
+is web-only. On NVIDIA cards, Wayland was painful for a long time. It's
+much better today, but it isn't fully smooth sailing yet. And there's the
+learning curve, which is real: for the first few weeks you'll be less
+productive, because you'll be looking up how to do things you used to do
+without thinking.
+
+If your job depends on any of those points, don't migrate. The right call
+depends on what you run, not on ideology.
+
+But know this: today, with AI agents, Linux has never been this accessible.
+I'm an *AI maximalist*. I give my agents full access to my OS, and I
+wouldn't go back to Windows for anything because of that. It's a kind of
+comfort you only understand once you've made the jump.
+
+And no, that doesn't contradict what I wrote above about Codex's "Full
+Access" mode on Windows. Giving an agent full power isn't a question of
+trust, it's a question of recovery cost. On my machine, the file system is
+btrfs with snapper, SELinux runs in Enforcing mode, my configs are
+versioned in Git, and my packages reinstall with one command. The worst
+case costs me a rollback and a coffee. On a Windows box whose state lives
+in a registry and in folders I can neither read nor diff, that same worst
+case costs me a full reinstall. It isn't the same full access.
+
+## Conclusion
+
+I didn't switch to Linux out of activism, or because Windows is badly
+built. I switched because the way I work changed.
+
+Back when I typed every command myself, 400 ms of shell startup was
+invisible: I was thinking during that time. Now that agents run the
+commands, hundreds per session, those 400 ms have become the limiting
+factor. And when I had to give them enough freedom to be useful, I needed a
+kernel capable of containing them. On Linux, that's a system call. On
+Windows, OpenAI had to spend months building it, and they say so in writing.
+
+Windows didn't get worse. Developer work moved toward a model that Linux
+was already serving, all along, without ever planning for it.
