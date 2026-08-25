@@ -115,18 +115,6 @@ function FrenchFlag() {
 function StatusBlock() {
   return (
     <div className="flex w-full flex-col items-end">
-      {siteConfig.available && (
-        <div className={statusRow}>
-          <p className={`${statusPill} text-foreground`}>
-            Open to work
-            <span
-              aria-hidden="true"
-              className="size-2 animate-pulse rounded-full bg-[color:var(--available)]"
-            />
-          </p>
-        </div>
-      )}
-
       <div className={statusRow}>
         <span className={`${statusPill} text-muted-foreground gap-2`}>
           <FrenchFlag />
@@ -186,16 +174,6 @@ function MobileStatusBlock() {
   return (
     <div className="mt-6 w-full">
       <div className="border-grid-soft mb-1 flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 border-y border-dashed px-4 py-1">
-        {siteConfig.available && (
-          <span className="text-foreground inline-flex items-center gap-2">
-            Open to work
-            <span
-              aria-hidden="true"
-              className="size-2 animate-pulse rounded-full bg-[color:var(--available)]"
-            />
-          </span>
-        )}
-
         <span className="text-muted-foreground inline-flex items-center gap-2">
           <FrenchFlag />
           {siteConfig.location}

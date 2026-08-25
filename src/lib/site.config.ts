@@ -6,7 +6,6 @@ export const siteConfig = {
   role: "Indie Maker",
   pitch: "I build developer tools for the new way of coding.",
   location: "Remote · France",
-  available: true,
   language: "en",
   locale: "en_US",
   title: "Arthur Jean | Developer tools for AI coding agents",
